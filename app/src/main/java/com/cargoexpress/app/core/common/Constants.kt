@@ -1,0 +1,8 @@
+package pe.edu.upc.appturismo.common
+
+
+object Constants {
+    const val BASE_URL = "https://cargoexpressapi-b9hxcvayhfezhub2.brazilsouth-01.azurewebsites.net/api/v1/"
+    const val TOKEN = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjgwMTM0MTAsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL3NpZCI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJpYXQiOjE3Mjc0MDg2MTAsIm5iZiI6MTcyNzQwODYxMH0.ZDZlA_YXekpUC9WvWNGQEr1wlz2WNuhaE7_PrrnDlus"
+    const val EXAMPLE_USER_ID = 1L
+}
