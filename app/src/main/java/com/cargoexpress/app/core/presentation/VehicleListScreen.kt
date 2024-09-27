@@ -1,13 +1,20 @@
 package com.cargoexpress.app.core.presentation
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cargoexpress.app.R
 import com.cargoexpress.app.core.data.remote.VehicleDto
 
 @Composable
@@ -21,21 +28,36 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        HeaderSection()
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                modifier = Modifier.weight(1f).padding(end = 8.dp),
-                placeholder = { Text("Buscar vehículo por modelo o placa") }
+                modifier = Modifier
+                    .weight(1f)
+                    .height(56.dp)
+                    .padding(end = 8.dp)
+                    .shadow(4.dp, RoundedCornerShape(24.dp)),
+                placeholder = { Text("Buscar vehículo ") }
             )
-            Button(onClick = {
-                viewModel.getVehicleList()
-            }) {
+            Button(
+                onClick = {
+                    viewModel.getVehicleList()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF1F504)
+                ),
+                shape = RoundedCornerShape(50),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 Text("Buscar")
             }
+
         }
 
         if (state.isLoading) {
@@ -66,13 +88,92 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
 
 @Composable
 fun VehicleItem(vehicle: VehicleDto) {
-    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF3A3A3A),
+            contentColor = Color.White
+        )
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Modelo: ${vehicle.model}", style = MaterialTheme.typography.headlineSmall)
-            Text(text = "Placa: ${vehicle.plate}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Placa del tractor: ${vehicle.tractorPlate}", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Carga máxima: ${vehicle.maxLoad} kg", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Volumen: ${vehicle.volume} m³", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = "Modelo: ${vehicle.model}",
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.White
+            )
+            Text(
+                text = "Placa: ${vehicle.plate}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Placa del tractor: ${vehicle.tractorPlate}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Carga máxima: ${vehicle.maxLoad} kg",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Volumen: ${vehicle.volume} m³",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
         }
+    }
+}
+
+
+@Composable
+fun HeaderSection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo",
+            modifier = Modifier.size(48.dp)
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+
+        Text(
+            text = "CargoExpress",
+            style = MaterialTheme.typography.headlineMedium,
+            color = Color.Black
+        )
+        AdminBadge()
+    }
+}
+
+
+@Composable
+fun AdminBadge() {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .shadow(4.dp, RoundedCornerShape(8.dp))
+            .background(Color(0xFF3A3A3A)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Admin ",
+            style = MaterialTheme.typography.bodySmall,
+
+            color = Color.Yellow,
+            modifier = Modifier.padding(15.dp)
+        )
     }
 }

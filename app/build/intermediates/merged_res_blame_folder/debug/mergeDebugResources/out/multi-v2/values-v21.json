@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.cargoexpress.app-mergeDebugResources-2:/values-v21/values-v21.xml",
+            "outputFile": "com.cargoexpress.app-mergeDebugResources-54:/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\erick\\.gradle\\caches\\transforms-4\\5535d7fe594fc988dce2ba7347be559d\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
+                    "source": "C:\\Users\\Riva\\.gradle\\caches\\transforms-4\\5535d7fe594fc988dce2ba7347be559d\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",

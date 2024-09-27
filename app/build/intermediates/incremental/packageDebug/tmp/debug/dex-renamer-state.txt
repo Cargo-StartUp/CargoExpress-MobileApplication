@@ -1,13 +1,13 @@
-#Fri Sep 27 00:33:09 PET 2024
-base.0=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.2=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\10\\classes.dex
-base.3=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\14\\classes.dex
-base.4=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
-base.5=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
-base.6=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
-base.7=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
-base.8=C\:\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+#Fri Sep 27 12:29:41 GMT-05:00 2024
+base.0=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\10\\classes.dex
+base.3=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\14\\classes.dex
+base.4=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\15\\classes.dex
+base.5=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\1\\classes.dex
+base.6=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\4\\classes.dex
+base.7=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
+base.8=C\:\\Users\\Riva\\Desktop\\testMOBILE\\CargoExpress-MobileApplication\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=10/classes.dex
