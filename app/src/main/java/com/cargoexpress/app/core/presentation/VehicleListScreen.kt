@@ -125,6 +125,18 @@ fun VehicleItem(vehicle: VehicleDto) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF1F500),
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "Ver más")
+            }
         }
     }
 }

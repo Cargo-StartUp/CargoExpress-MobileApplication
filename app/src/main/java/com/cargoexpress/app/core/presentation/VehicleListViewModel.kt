@@ -18,6 +18,10 @@ class VehicleListViewModel(private val navController: NavController, private val
         private val _state = mutableStateOf(UIState<List<VehicleDto>>())
         val state: State<UIState<List<VehicleDto>>> get() = _state
 
+    private val _editVehicle = mutableStateOf<VehicleDto?>(null)
+    val editVehicle: State<VehicleDto?> get() = _editVehicle
+
+
     fun goBack(){
         navController.popBackStack()
     }
@@ -76,6 +80,10 @@ class VehicleListViewModel(private val navController: NavController, private val
                 _state.value = UIState(message = "Error with vehicles")
             }
         }
+    }
+
+    fun setEditVehicle(vehicle: VehicleDto) {
+        _editVehicle.value = vehicle
     }
 
 
