@@ -1,7 +1,7 @@
 package com.cargoexpress.app.core.data.repository
 
-import com.cargoexpress.app.core.data.remote.VehicleService
-import com.cargoexpress.app.core.data.remote.toVehicle
+import com.cargoexpress.app.core.data.remote.vehicle.VehicleService
+import com.cargoexpress.app.core.data.remote.vehicle.toVehicle
 import com.cargoexpress.app.core.domain.Vehicle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
