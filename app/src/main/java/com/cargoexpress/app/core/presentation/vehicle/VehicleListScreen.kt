@@ -12,11 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.cargoexpress.app.R
 import com.cargoexpress.app.core.data.remote.vehicle.VehicleDto
+import com.cargoexpress.app.core.data.repository.VehicleRepository
 import pe.edu.upc.appturismo.common.Constants
+import pe.edu.upc.appturismo.common.Resource
 
 @Composable
 fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
@@ -192,3 +196,5 @@ fun AdminBadge() {
         )
     }
 }
+
+
