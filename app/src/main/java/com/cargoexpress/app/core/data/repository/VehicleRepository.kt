@@ -1,5 +1,7 @@
 package com.cargoexpress.app.core.data.repository
 
+
+
 import com.cargoexpress.app.core.data.remote.vehicle.VehicleService
 import com.cargoexpress.app.core.data.remote.vehicle.toVehicle
 import com.cargoexpress.app.core.domain.Vehicle
@@ -44,4 +46,3 @@ class VehicleRepository(private val vehicleService: VehicleService) {
         return@withContext Resource.Error(response.message())
     }
 }
-

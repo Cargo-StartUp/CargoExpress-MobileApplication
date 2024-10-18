@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CargoexpressTheme {
                 val navController = rememberNavController()
-                val loginViewModel = LoginViewModel(navController, LoginRepository(loginService))
+                val loginViewModel = LoginViewModel(navController,LoginRepository(loginService),EntrepreneurRepository(entrepreneurService))
                 val registerViewModel = RegisterViewModel(
                     navController,
                     RegisterRepository(registerService),
@@ -120,7 +120,7 @@ class MainActivity : ComponentActivity() {
                     ClientRepository(clientService),
                     EntrepreneurRepository(entrepreneurService)
                 )
-                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService))
+                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService),EntrepreneurRepository(entrepreneurService))
 
                 val driverRepository = DriverRepository(driverService)
                 val driverListViewModel = DriverListViewModel(navController, driverRepository)

@@ -25,12 +25,14 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
 
     val state by viewModel.state
 
+    // Obtener vehículos al cargar la pantalla
     LaunchedEffect(Unit) {
-        viewModel.getVehicleList()
+        viewModel.getVehiclesForEntrepreneur(entrepreneurId = Constants.ENTREPRENEUR_ID, token = Constants.TOKEN)
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         HeaderSection()
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,7 +51,7 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             )
             Button(
                 onClick = {
-                    viewModel.getVehicleList()
+                    viewModel.getVehiclesForEntrepreneur(entrepreneurId = Constants.ENTREPRENEUR_ID, token = Constants.TOKEN)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFF1F504)
@@ -59,13 +61,16 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             ) {
                 Text("Buscar")
             }
-
         }
 
+        // Indicador de carga
         if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
 
+        // Mostrar mensaje de error o éxito
         state.message?.let { message ->
             Text(
                 text = message,
@@ -74,15 +79,27 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             )
         }
 
+        // Lista de vehículos filtrada
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
             val filteredVehicles = state.data?.filter { vehicle ->
                 vehicle.model.contains(searchQuery, ignoreCase = true) ||
-                        vehicle.plate.contains(searchQuery, ignoreCase = true)
+                        vehicle.plate.contains(searchQuery, ignoreCase = true) ||
+                        vehicle.tractorPlate.contains(searchQuery, ignoreCase = true)
             } ?: emptyList()
 
-            items(filteredVehicles.size) { index ->
-                val vehicle = filteredVehicles[index]
-                VehicleItem(vehicle = vehicle)
+            if (filteredVehicles.isEmpty()) {
+                item {
+                    Text(
+                        text = "No se encontraron vehículos",
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            } else {
+                items(filteredVehicles.size) { index ->
+                    val vehicle = filteredVehicles[index]
+                    VehicleItem(vehicle = vehicle)
+                }
             }
         }
     }
@@ -166,7 +183,7 @@ fun HeaderSection() {
         Text(
             text = "CargoExpress",
             style = MaterialTheme.typography.headlineMedium,
-            color = Color.White
+            color = Color.Black
         )
         AdminBadge()
     }

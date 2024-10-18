@@ -1,5 +1,7 @@
 package com.cargoexpress.app.core.presentation.register
 
+
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -125,6 +127,7 @@ class RegisterViewModel(
 
             entrepreneurRepository.createEntrepreneur(entrepreneurRequest, token)
                 .onSuccess {
+
                     _state.value = UIState(isLoading = false, message = "Usuario y entrepreneur creados exitosamente")
                     navController.navigate(Routes.Login.routes)
                 }
