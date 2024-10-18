@@ -6,5 +6,6 @@ data class Vehicle (
     val plate: String,
     val tractorPlate: String,
     val maxLoad: Float,
-    val volume: Float
+    val volume: Float,
+    val idEntrepreneur: Int
 )
