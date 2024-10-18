@@ -1,23 +1,11 @@
-
 package com.cargoexpress.app.core
 
-import android.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +20,7 @@ import com.cargoexpress.app.core.data.repository.ClientRepository
 import com.cargoexpress.app.core.data.repository.EntrepreneurRepository
 import com.cargoexpress.app.core.data.repository.LoginRepository
 import com.cargoexpress.app.core.data.repository.RegisterRepository
+import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.data.repository.VehicleRepository
 import com.cargoexpress.app.core.presentation.vehicle.VehicleListViewModel
 import com.cargoexpress.app.core.presentation.login.LoginScreen
@@ -39,6 +28,9 @@ import com.cargoexpress.app.core.presentation.login.LoginViewModel
 import com.cargoexpress.app.core.presentation.register.RegisterScreen
 import com.cargoexpress.app.core.presentation.register.RegisterViewModel
 import com.cargoexpress.app.core.presentation.vehicle.VehicleListScreen
+import com.cargoexpress.app.core.presentation.record.RecordScreen
+import com.cargoexpress.app.core.presentation.fleet.FleetScreen
+import com.cargoexpress.app.core.presentation.trip.TripManagementScreen
 import com.cargoexpress.app.core.ui.theme.CargoexpressTheme
 import pe.edu.upc.appturismo.common.Constants
 import retrofit2.Retrofit
@@ -46,13 +38,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.DirectionsBusFilled
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.twotone.AppRegistration
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -105,14 +93,14 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(TripService::class.java)
 
+        val tripRepository = TripRepository(tripService)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
             CargoexpressTheme {
-
                 val navController = rememberNavController()
-
                 val loginViewModel = LoginViewModel(navController, LoginRepository(loginService))
                 val registerViewModel = RegisterViewModel(
                     navController,
@@ -121,48 +109,35 @@ class MainActivity : ComponentActivity() {
                     ClientRepository(clientService),
                     EntrepreneurRepository(entrepreneurService)
                 )
-                val vehicleListViewModel =
-                    VehicleListViewModel(navController, VehicleRepository(vehicleService))
+                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService))
 
-                val currentDestination =
-                    navController.currentBackStackEntryAsState().value?.destination?.route
+                val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
                 Scaffold(
                     bottomBar = {
                         NavigationBar {
                             NavigationBarItem(
-                                selected = currentDestination == Routes.Register.routes,
-                                onClick = { navController.navigate(Routes.Register.routes) },
-                                icon = {
-                                  Icon(imageVector = Icons.TwoTone.AppRegistration, contentDescription = "Registro")
-
-                                },
+                                selected = currentDestination == "record",
+                                onClick = { navController.navigate("record") },
+                                icon = { Icon(imageVector = Icons.TwoTone.AppRegistration, contentDescription = "Registro") },
                                 label = { Text("Registro") }
                             )
                             NavigationBarItem(
-                                selected = currentDestination == Routes.VehicleList.routes,
-                                onClick = { navController.navigate(Routes.VehicleList.routes) },
+                                selected = currentDestination == "fleet",
+                                onClick = { navController.navigate("fleet") },
                                 icon = { Icon(Icons.Filled.DirectionsBusFilled, contentDescription = "Flota") },
                                 label = { Text("Flota") }
                             )
                             NavigationBarItem(
-                                selected = currentDestination == "history",
-                                onClick = {
-                                },
-                                icon = { Icon(Icons.Filled.Autorenew, contentDescription = "Flota") },
-
+                                selected = currentDestination == "trip",
+                                onClick = { navController.navigate("trip") },
+                                icon = { Icon(Icons.Filled.Autorenew, contentDescription = "Historial") },
                                 label = { Text("Historial") }
                             )
                             NavigationBarItem(
                                 selected = currentDestination == "gps",
-                                onClick = {
-                                },
-                                icon = {
-                                    Icon(
-                                        Icons.Filled.LocationOn,
-                                        contentDescription = "GPS"
-                                    )
-                                },
+                                onClick = { },
+                                icon = { Icon(Icons.Filled.LocationOn, contentDescription = "GPS") },
                                 label = { Text("GPS") }
                             )
                         }
@@ -182,8 +157,14 @@ class MainActivity : ComponentActivity() {
                         composable(route = Routes.Register.routes) {
                             RegisterScreen(navController, viewModel = registerViewModel)
                         }
-                        composable(route = "history") {
-
+                        composable(route = "record") {
+                            RecordScreen()
+                        }
+                        composable(route = "fleet") {
+                            FleetScreen(navController)
+                        }
+                        composable(route = "trip") {
+                            TripManagementScreen(tripRepository = tripRepository)
                         }
                         composable(route = "gps") {
 

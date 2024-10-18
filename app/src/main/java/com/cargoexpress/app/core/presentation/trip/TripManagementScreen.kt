@@ -12,53 +12,108 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
-import com.cargoexpress.app.core.data.remote.trip.TripDto
 import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.domain.Trip
 
 @Composable
-fun TripManagementScreen(viewModel: TripManagementViewModel = viewModel()) {
-    var searchQuery by remember { mutableStateOf("") }
+fun TripManagementScreen(
+    tripRepository: TripRepository
+) {
+    val factory = remember { TripManagementViewModelFactory(tripRepository) }
+    val viewModel: TripManagementViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedFilter by remember { mutableStateOf("ID") }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = {
+                    searchQuery = it
+                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                },
+                onSearchClick = {
+                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                }
+            )
 
-        SearchBar(query = searchQuery, onQueryChange = { searchQuery = it })
+
+            Button(
+                onClick = {
+                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                },
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Icon(Icons.Default.Search, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "Buscar")
+            }
+        }
+
+        FilterOptions(
+            selectedFilter = selectedFilter,
+            onFilterChange = { selectedFilter = it }
+        )
 
         when {
             uiState.isLoading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
             uiState.message.isNotBlank() -> {
-                Text(text = uiState.message, color = Color.Red, modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(
+                    text = uiState.message,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
             else -> {
-                TripList(trips = uiState.data ?: emptyList(), searchQuery = searchQuery)
+                TripList(trips = uiState.data ?: emptyList())
             }
         }
     }
 }
 
 @Composable
-fun TripList(trips: List<Trip>, searchQuery: String) {
-    val filteredTrips = trips.filter { trip ->
-        trip.id.toString().contains(searchQuery, ignoreCase = true) ||
-                trip.loadDate.toString().contains(searchQuery, ignoreCase = true) ||
-                trip.loadLocation.contains(searchQuery, ignoreCase = true)
+fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        listOf("ID", "Fecha", "Lugar").forEach { filter ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                RadioButton(
+                    selected = selectedFilter == filter,
+                    onClick = { onFilterChange(filter) }
+                )
+                Text(text = filter)
+            }
+        }
     }
+}
 
+@Composable
+fun TripList(trips: List<Trip>) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(top = 16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(filteredTrips) { trip ->
+        items(trips) { trip ->
             TripCard(trip = trip)
         }
     }
@@ -69,35 +124,27 @@ fun TripCard(trip: Trip) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = "Viaje #${trip.id}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Yellow
+                color = Color(0xFF999900)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Fecha de carga: ${trip.loadDate}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Lugar de carga: ${trip.loadLocation}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Text(text = "FECHA DE CARGA: ${trip.loadDate}")
+            Text(text = "LUGAR DE CARGA: ${trip.loadLocation}")
             Spacer(modifier = Modifier.height(8.dp))
             Button(
-                onClick = {  },
-                modifier = Modifier.align(Alignment.End),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow)
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF00)),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(text = "Ver más", color = Color.Black)
+                Text(text = "Ver más")
             }
         }
     }
@@ -105,43 +152,36 @@ fun TripCard(trip: Trip) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
-        label = { Text("Buscar") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearchClick: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = Color.Yellow,
-            unfocusedIndicatorColor = Color.Gray,
-
+            .padding(bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = query,
+            onValueChange = onQueryChange,
+            label = { Text("Buscar") },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 8.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
+            )
         )
-    )
-}
-
-
-/*@Preview(showBackground = true)
-@Composable
-fun TripManagementScreenPreview() {
-    val navController = rememberNavController()
-    val viewModel = TripManagementViewModel(
-        tripRepository = FakeTripRepository()
-    )
-    TripManagementScreen(viewModel = viewModel)
-}
-
-class FakeTripRepository : TripRepository {
-    override suspend fun getTrips(token: String): List<TripDto> {
-        return listOf(
-            TripDto(1, "Viaje 1", 100, "Lima", 100f, 200f),
-            TripDto(2, "Viaje 2", 200, "Arequipa", 200f, 300f),
-            TripDto(3, "Viaje 3", 300, "Cusco", 300f, 400f),
-        )
+        Button(
+            onClick = onSearchClick,
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF00)),
+            modifier = Modifier.height(56.dp)
+        ) {
+            Text(
+                text = "Buscar",
+                color = Color.Black
+            )
+        }
     }
 }
-*/

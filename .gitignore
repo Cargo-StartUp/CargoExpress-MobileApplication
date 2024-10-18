@@ -1,4 +1,3 @@
-/app/
 # built application files
 *.apk
 *.ap_
@@ -13,8 +12,9 @@
 *.class
 
 # generated files
-bin/
-gen/
+/app/build/
+/app/.gradle/
+/app/intermediates/
 
 # Ignore gradle files
 .gradle/

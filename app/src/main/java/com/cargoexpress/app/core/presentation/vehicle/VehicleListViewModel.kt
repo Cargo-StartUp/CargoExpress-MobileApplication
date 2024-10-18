@@ -1,5 +1,7 @@
 package com.cargoexpress.app.core.presentation.vehicle
 
+
+
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,8 +17,8 @@ import pe.edu.upc.appturismo.common.UIState
 class VehicleListViewModel(private val navController: NavController, private val vehicleRepository: VehicleRepository )
     : ViewModel() {
 
-        private val _state = mutableStateOf(UIState<List<VehicleDto>>())
-        val state: State<UIState<List<VehicleDto>>> get() = _state
+    private val _state = mutableStateOf(UIState<List<VehicleDto>>())
+    val state: State<UIState<List<VehicleDto>>> get() = _state
 
     private val _editVehicle = mutableStateOf<VehicleDto?>(null)
     val editVehicle: State<VehicleDto?> get() = _editVehicle
@@ -53,7 +55,7 @@ class VehicleListViewModel(private val navController: NavController, private val
                                     maxLoad = maxLoad,
                                     volume = volume,
 
-                                )
+                                    )
                             )
 
 
@@ -87,4 +89,4 @@ class VehicleListViewModel(private val navController: NavController, private val
     }
 
 
-    }
+}

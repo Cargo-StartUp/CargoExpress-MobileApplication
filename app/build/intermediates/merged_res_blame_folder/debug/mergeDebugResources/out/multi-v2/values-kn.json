@@ -4,24 +4,7 @@
             "outputFile": "com.cargoexpress.app-mergeDebugResources-60:/values-kn/values-kn.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\1d03bd91afcd8f0bbbea6a94d11004bd\\transformed\\foundation-release\\res\\values-kn\\values-kn.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,143",
-                        "endColumns": "87,94",
-                        "endOffsets": "138,233"
-                    },
-                    "to": {
-                        "startLines": "84,85",
-                        "startColumns": "4,4",
-                        "startOffsets": "8809,8897",
-                        "endColumns": "87,94",
-                        "endOffsets": "8892,8987"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\f1f07b1fb52c01143ee60801b19bfe8b\\transformed\\core-1.13.1\\res\\values-kn\\values-kn.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\7be42dfc4272f09aa26364c594892911\\transformed\\core-1.13.1\\res\\values-kn\\values-kn.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -38,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\ceacff678f0748dbdf9ad1561604caea\\transformed\\material3-release\\res\\values-kn\\values-kn.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\68d97bb5f8b13d706cb572b2ec849ea5\\transformed\\material3-release\\res\\values-kn\\values-kn.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -55,7 +38,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\6d8be19807ad5b3d5fbb33c1452d5bfd\\transformed\\ui-release\\res\\values-kn\\values-kn.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\59fd3f868fc32316c36139c64aca2434\\transformed\\foundation-release\\res\\values-kn\\values-kn.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,143",
+                        "endColumns": "87,94",
+                        "endOffsets": "138,233"
+                    },
+                    "to": {
+                        "startLines": "84,85",
+                        "startColumns": "4,4",
+                        "startOffsets": "8809,8897",
+                        "endColumns": "87,94",
+                        "endOffsets": "8892,8987"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\b043b97aac2a22eb20914fa3826b5f9c\\transformed\\ui-release\\res\\values-kn\\values-kn.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

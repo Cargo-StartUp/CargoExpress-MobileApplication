@@ -4,7 +4,7 @@
             "outputFile": "com.cargoexpress.app-mergeDebugResources-60:/values-v18/values-v18.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\1a86b9e8b2af04f5281f5d39efdd1641\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\15b2b73a965ba06697370c4f2fef19f1\\transformed\\core-1.6.1\\res\\values-v18\\values.xml",
                     "from": {
                         "startLines": "4,12",
                         "startColumns": "0,0",

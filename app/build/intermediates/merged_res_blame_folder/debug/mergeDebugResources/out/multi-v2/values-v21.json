@@ -4,7 +4,7 @@
             "outputFile": "com.cargoexpress.app-mergeDebugResources-60:/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\f1f07b1fb52c01143ee60801b19bfe8b\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\7be42dfc4272f09aa26364c594892911\\transformed\\core-1.13.1\\res\\values-v21\\values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\1a86b9e8b2af04f5281f5d39efdd1641\\transformed\\core-1.6.1\\res\\values-v21\\values.xml",
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\8.9\\transforms\\15b2b73a965ba06697370c4f2fef19f1\\transformed\\core-1.6.1\\res\\values-v21\\values.xml",
                     "from": {
                         "startLines": "4,13",
                         "startColumns": "0,0",

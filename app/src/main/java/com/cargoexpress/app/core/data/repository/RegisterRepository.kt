@@ -3,7 +3,6 @@ package com.cargoexpress.app.core.data.repository
 import com.cargoexpress.app.core.data.remote.register.RegisterRequestDto
 import com.cargoexpress.app.core.data.remote.register.RegisterResponseDto
 import com.cargoexpress.app.core.data.remote.register.RegisterService
-import com.cargoexpress.app.core.domain.RegisterResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
