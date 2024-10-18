@@ -1,3 +1,4 @@
+
 package com.cargoexpress.app.core.presentation.fleet
 
 import androidx.compose.foundation.background
@@ -35,7 +36,7 @@ fun FleetScreen(navController: NavController) {
             description = "Ver la lista de conductores registrados en su empresa",
             visualizarColor = Color(0xFFF1F504),
             modificarColor = Color(0xFFF1F504),
-            onVisualizarClick = { navController.navigate(Routes.VehicleList.routes) }
+            onVisualizarClick = { navController.navigate(Routes.DriverList.routes) }
         )
         FleetItem(
             title = "Visualizar Vehículos",

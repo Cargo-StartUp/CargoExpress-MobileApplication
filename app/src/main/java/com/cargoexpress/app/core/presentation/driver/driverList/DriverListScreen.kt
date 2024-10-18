@@ -1,4 +1,4 @@
-package com.cargoexpress.app.core.presentation.vehicle
+package com.cargoexpress.app.core.presentation.driver.driverList
 
 
 import androidx.compose.foundation.Image
@@ -16,17 +16,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cargoexpress.app.R
-import com.cargoexpress.app.core.data.remote.vehicle.VehicleDto
+import com.cargoexpress.app.core.data.remote.driver.DriverDto
 import pe.edu.upc.appturismo.common.Constants
 
 @Composable
-fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
+fun DriverListScreen(viewModel: DriverListViewModel = viewModel()) {
     var searchQuery by remember { mutableStateOf("") }
 
     val state by viewModel.state
 
     LaunchedEffect(Unit) {
-        viewModel.getVehicleList()
+        viewModel.getDriverList()
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -45,11 +45,11 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
                     .height(56.dp)
                     .padding(end = 8.dp)
                     .shadow(4.dp, RoundedCornerShape(24.dp)),
-                placeholder = { Text("Buscar vehículo ") }
+                placeholder = { Text("Buscar conductor") }
             )
             Button(
                 onClick = {
-                    viewModel.getVehicleList()
+                    viewModel.getDriverList()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFF1F504)
@@ -59,7 +59,6 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             ) {
                 Text("Buscar")
             }
-
         }
 
         if (state.isLoading) {
@@ -75,21 +74,21 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
         }
 
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
-            val filteredVehicles = state.data?.filter { vehicle ->
-                vehicle.model.contains(searchQuery, ignoreCase = true) ||
-                        vehicle.plate.contains(searchQuery, ignoreCase = true)
+            val filteredDrivers = state.data?.filter { driver ->
+                driver.name.contains(searchQuery, ignoreCase = true) ||
+                        driver.dni.contains(searchQuery, ignoreCase = true)
             } ?: emptyList()
 
-            items(filteredVehicles.size) { index ->
-                val vehicle = filteredVehicles[index]
-                VehicleItem(vehicle = vehicle)
+            items(filteredDrivers.size) { index ->
+                val driver = filteredDrivers[index]
+                DriverItem(driver = driver)
             }
         }
     }
 }
 
 @Composable
-fun VehicleItem(vehicle: VehicleDto) {
+fun DriverItem(driver: DriverDto) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,27 +102,22 @@ fun VehicleItem(vehicle: VehicleDto) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = "Modelo: ${vehicle.model}",
+                text = "Nombre: ${driver.name}",
                 style = MaterialTheme.typography.headlineSmall,
                 color = Color.White
             )
             Text(
-                text = "Placa: ${vehicle.plate}",
+                text = "DNI: ${driver.dni}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
             Text(
-                text = "Placa del tractor: ${vehicle.tractorPlate}",
+                text = "Licencia: ${driver.license}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
             Text(
-                text = "Carga máxima: ${vehicle.maxLoad} kg",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
-            )
-            Text(
-                text = "Volumen: ${vehicle.volume} m³",
+                text = "Número de contacto: ${driver.contactNumber}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
@@ -143,7 +137,6 @@ fun VehicleItem(vehicle: VehicleDto) {
     }
 }
 
-
 @Composable
 fun HeaderSection() {
     Row(
@@ -153,7 +146,6 @@ fun HeaderSection() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
@@ -161,7 +153,6 @@ fun HeaderSection() {
         )
 
         Spacer(modifier = Modifier.width(8.dp))
-
 
         Text(
             text = "CargoExpress",
@@ -171,7 +162,6 @@ fun HeaderSection() {
         AdminBadge()
     }
 }
-
 
 @Composable
 fun AdminBadge() {
@@ -187,7 +177,6 @@ fun AdminBadge() {
         Text(
             text = userName,
             style = MaterialTheme.typography.bodySmall,
-
             color = Color.Yellow,
             modifier = Modifier.padding(15.dp)
         )

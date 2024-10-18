@@ -46,6 +46,10 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.cargoexpress.app.core.data.remote.driver.DriverService
+import com.cargoexpress.app.core.data.repository.DriverRepository
+import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
+import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -93,6 +97,13 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(TripService::class.java)
 
+        val driverService = Retrofit
+            .Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(DriverService::class.java)
+
         val tripRepository = TripRepository(tripService)
 
         super.onCreate(savedInstanceState)
@@ -111,6 +122,8 @@ class MainActivity : ComponentActivity() {
                 )
                 val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService))
 
+                val driverRepository = DriverRepository(driverService)
+                val driverListViewModel = DriverListViewModel(navController, driverRepository)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
 
                 Scaffold(
@@ -166,8 +179,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = "trip") {
                             TripManagementScreen(tripRepository = tripRepository)
                         }
+                        composable(route = Routes.DriverList.routes) {
+                            DriverListScreen(viewModel = driverListViewModel)
+                        }
                         composable(route = "gps") {
-
+                            // GPS screen
                         }
                     }
                 }
