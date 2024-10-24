@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -22,11 +24,15 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun RecordScreen() {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(16.dp)
+            .verticalScroll(scrollState),
+
+    verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         RecordItem(
             title = "Registrar Viajes",
@@ -57,12 +63,14 @@ fun RecordScreen() {
 
 @Composable
 fun RecordItem(title: String, description: String, registrarColor: Color, modificarColor: Color) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(16.dp))
             .padding(16.dp)
-    ) {
+
+        ) {
 
         Text(
             text = title,
@@ -109,8 +117,3 @@ fun RecordItem(title: String, description: String, registrarColor: Color, modifi
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RecordScreenPreview() {
-    RecordScreen()
-}

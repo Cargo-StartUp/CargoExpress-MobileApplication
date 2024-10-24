@@ -57,7 +57,7 @@ class LoginViewModel(
                 Constants.ENTREPRENEUR_ID = entrepreneur.id
 
 
-                goToVehicleScreen()
+                goToRegistroScreen()
             }.onFailure { exception ->
                 val message = exception.message ?: "Error obteniendo el ID del empresario"
                 _state.value = UIState(message = message)
@@ -68,6 +68,10 @@ class LoginViewModel(
 
     private fun goToVehicleScreen() {
         navController.navigate(Routes.VehicleList.routes)
+    }
+
+    private fun goToRegistroScreen(){
+        navController.navigate(Routes.Record.routes)
     }
 
     private fun goToRegisterScreen() {

@@ -30,7 +30,7 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
         viewModel.getVehiclesForEntrepreneur(entrepreneurId = Constants.ENTREPRENEUR_ID, token = Constants.TOKEN)
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
         HeaderSection()
 
         Row(

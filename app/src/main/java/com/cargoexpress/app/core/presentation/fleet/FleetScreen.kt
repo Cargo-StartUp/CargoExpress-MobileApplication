@@ -95,8 +95,3 @@ fun FleetItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FleetScreenPreview() {
-    FleetScreen(navController = rememberNavController())
-}

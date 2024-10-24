@@ -157,7 +157,7 @@ fun HeaderSection() {
         Text(
             text = "CargoExpress",
             style = MaterialTheme.typography.headlineMedium,
-            color = Color.White
+            color = Color.Black
         )
         AdminBadge()
     }

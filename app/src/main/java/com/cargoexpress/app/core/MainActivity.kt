@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,15 +37,21 @@ import pe.edu.upc.appturismo.common.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.DirectionsBusFilled
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.twotone.AppRegistration
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cargoexpress.app.core.data.remote.driver.DriverService
 import com.cargoexpress.app.core.data.repository.DriverRepository
@@ -53,6 +60,7 @@ import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewMo
 
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val loginService = Retrofit
@@ -125,34 +133,76 @@ class MainActivity : ComponentActivity() {
                 val driverRepository = DriverRepository(driverService)
                 val driverListViewModel = DriverListViewModel(navController, driverRepository)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
 
+                @Composable
+                fun MyAppBar(onProfileClick: () -> Unit) {
+                    TopAppBar(
+                        title = { Text("CargoExpress") }, // Título de la AppBar
+                        actions = {
+                            IconButton(onClick = { onProfileClick() }) {
+                                Icon(imageVector = Icons.Filled.AccountCircle, modifier = Modifier.size(100.dp), contentDescription = "Perfil")
+                            }
+                        }
+                    )
+                }
                 Scaffold(
+                    topBar = {
+                        if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
+                            MyAppBar(onProfileClick = {
+                                // Navegar a la pantalla de perfil
+                                navController.navigate("profile")
+                            })
+                        }
+                    },
                     bottomBar = {
-                        NavigationBar {
-                            NavigationBarItem(
-                                selected = currentDestination == "record",
-                                onClick = { navController.navigate("record") },
-                                icon = { Icon(imageVector = Icons.TwoTone.AppRegistration, contentDescription = "Registro") },
-                                label = { Text("Registro") }
-                            )
-                            NavigationBarItem(
-                                selected = currentDestination == "fleet",
-                                onClick = { navController.navigate("fleet") },
-                                icon = { Icon(Icons.Filled.DirectionsBusFilled, contentDescription = "Flota") },
-                                label = { Text("Flota") }
-                            )
-                            NavigationBarItem(
-                                selected = currentDestination == "trip",
-                                onClick = { navController.navigate("trip") },
-                                icon = { Icon(Icons.Filled.Autorenew, contentDescription = "Historial") },
-                                label = { Text("Historial") }
-                            )
-                            NavigationBarItem(
-                                selected = currentDestination == "gps",
-                                onClick = { },
-                                icon = { Icon(Icons.Filled.LocationOn, contentDescription = "GPS") },
-                                label = { Text("GPS") }
-                            )
+                        if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
+                            NavigationBar {
+                                NavigationBarItem(
+                                    selected = currentDestination == "record",
+                                    onClick = { navController.navigate("record") },
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.TwoTone.AppRegistration,
+                                            contentDescription = "Registro"
+                                        )
+                                    },
+                                    label = { Text("Registro") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentDestination == "fleet",
+                                    onClick = { navController.navigate("fleet") },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.DirectionsBusFilled,
+                                            contentDescription = "Flota"
+                                        )
+                                    },
+                                    label = { Text("Flota") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentDestination == "trip",
+                                    onClick = { navController.navigate("trip") },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.Autorenew,
+                                            contentDescription = "Historial"
+                                        )
+                                    },
+                                    label = { Text("Historial") }
+                                )
+                                NavigationBarItem(
+                                    selected = currentDestination == "gps",
+                                    onClick = { },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.LocationOn,
+                                            contentDescription = "GPS"
+                                        )
+                                    },
+                                    label = { Text("GPS") }
+                                )
+                            }
                         }
                     }
                 ) { innerPadding ->
@@ -169,6 +219,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = Routes.Register.routes) {
                             RegisterScreen(navController, viewModel = registerViewModel)
+                        }
+                        composable (route = Routes.Record.routes ){
+                            RecordScreen()
                         }
                         composable(route = "record") {
                             RecordScreen()
