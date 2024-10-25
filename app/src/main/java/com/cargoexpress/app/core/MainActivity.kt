@@ -54,9 +54,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cargoexpress.app.core.data.remote.driver.DriverService
+import com.cargoexpress.app.core.data.remote.expense.ExpenseService
 import com.cargoexpress.app.core.data.repository.DriverRepository
+import com.cargoexpress.app.core.data.repository.ExpenseRepository
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
+import com.cargoexpress.app.core.presentation.record.registerDriver.RegisterDriverScreen
+import com.cargoexpress.app.core.presentation.record.registerDriver.RegisterDriverViewModel
+//import com.cargoexpress.app.core.presentation.record.registerExpense.RegisterExpenseScreen
+import com.cargoexpress.app.core.presentation.record.registerTrip.RegisterTripScreen
+import com.cargoexpress.app.core.presentation.record.registerTrip.RegisterTripViewModel
+import com.cargoexpress.app.core.presentation.record.registerVehicle.RegisterVehicleScreen
+import com.cargoexpress.app.core.presentation.record.registerVehicle.RegisterVehicleViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -112,6 +121,13 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(DriverService::class.java)
 
+        val expenseService = Retrofit
+            .Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ExpenseService::class.java)
+
         val tripRepository = TripRepository(tripService)
 
         super.onCreate(savedInstanceState)
@@ -120,7 +136,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CargoexpressTheme {
                 val navController = rememberNavController()
-                val loginViewModel = LoginViewModel(navController,LoginRepository(loginService),EntrepreneurRepository(entrepreneurService))
+                val loginViewModel = LoginViewModel(navController, LoginRepository(loginService), EntrepreneurRepository(entrepreneurService))
                 val registerViewModel = RegisterViewModel(
                     navController,
                     RegisterRepository(registerService),
@@ -128,10 +144,19 @@ class MainActivity : ComponentActivity() {
                     ClientRepository(clientService),
                     EntrepreneurRepository(entrepreneurService)
                 )
-                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService),EntrepreneurRepository(entrepreneurService))
-
+                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService), EntrepreneurRepository(entrepreneurService))
+                //driver
                 val driverRepository = DriverRepository(driverService)
                 val driverListViewModel = DriverListViewModel(navController, driverRepository)
+
+                //expense
+                val expenseRepository = ExpenseRepository(expenseService)
+
+                //vehicle
+                val vehicleRepository = VehicleRepository(vehicleService)
+
+                //Trip
+                val tripRepository = TripRepository(tripService)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
 
@@ -220,11 +245,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = Routes.Register.routes) {
                             RegisterScreen(navController, viewModel = registerViewModel)
                         }
-                        composable (route = Routes.Record.routes ){
-                            RecordScreen()
+                        composable(route = Routes.Record.routes) {
+                            RecordScreen(navController = navController)
                         }
                         composable(route = "record") {
-                            RecordScreen()
+                            RecordScreen(navController = navController)
                         }
                         composable(route = "fleet") {
                             FleetScreen(navController)
@@ -234,6 +259,40 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = Routes.DriverList.routes) {
                             DriverListScreen(viewModel = driverListViewModel)
+                        }
+
+
+                       /*composable(
+                           route = "register_expense") { backStackEntry ->
+                            val token = backStackEntry.arguments?.getString("token") ?: ""
+                            val registerExpenseViewModel = RegisterExpenseViewModel(expenseRepository)
+                            RegisterExpenseScreen(viewModel = registerExpenseViewModel) { expense ->
+                                // Handle driver registration success
+                            }
+                        }
+*/
+                        composable(route = "register_driver") { backStackEntry ->
+                            val token = backStackEntry.arguments?.getString("token") ?: ""
+                            val registerDriverViewModel = RegisterDriverViewModel(driverRepository)
+                            RegisterDriverScreen(viewModel = registerDriverViewModel) { driver ->
+
+                            }
+                        }
+
+                        composable(route = "register_vehicle") { backStackEntry ->
+                            val token = backStackEntry.arguments?.getString("token") ?: ""
+                            val registerVehicleViewModel = RegisterVehicleViewModel(vehicleRepository)
+                            RegisterVehicleScreen(viewModel = registerVehicleViewModel) { vehicle ->
+                                // Handle vehicle registration success
+                            }
+                        }
+
+                        composable(route = "register_trip") { backStackEntry ->
+                            val token = backStackEntry.arguments?.getString("token") ?: ""
+                            val registerTripViewModel = RegisterTripViewModel(tripRepository)
+                            RegisterTripScreen (viewModel = registerTripViewModel) { trip ->
+                                // Handle trip registration success
+                            }
                         }
                         composable(route = "gps") {
                             // GPS screen

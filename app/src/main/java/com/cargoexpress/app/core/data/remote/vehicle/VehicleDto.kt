@@ -1,5 +1,7 @@
 package com.cargoexpress.app.core.data.remote.vehicle
 
+import com.cargoexpress.app.core.data.remote.driver.DriverDto
+import com.cargoexpress.app.core.domain.Driver
 import com.cargoexpress.app.core.domain.Vehicle
 
 data class VehicleDto (
@@ -9,8 +11,26 @@ data class VehicleDto (
     val tractorPlate: String,
     val maxLoad: Float,
     val volume: Float,
-    val entrepreneurId: Int  // Esto es opcional, si es que está incluido en la respuesta del servidor
+    val entrepreneurId: Int
 
 )
 
-fun VehicleDto.toVehicle() = Vehicle(id,model,plate,tractorPlate,maxLoad,volume,entrepreneurId)
+fun VehicleDto.toVehicle() = Vehicle(
+    id=id,
+    model=model,
+    plate=plate,
+    tractorPlate=tractorPlate,
+    maxLoad=maxLoad,
+    volume=volume,
+    entrepreneurId=entrepreneurId)
+
+
+fun Vehicle.toVehicleDto() = VehicleDto(
+    id = id,
+    model = model,
+    plate = plate,
+    tractorPlate = tractorPlate,
+    maxLoad = maxLoad,
+    volume = volume,
+    entrepreneurId = entrepreneurId
+)

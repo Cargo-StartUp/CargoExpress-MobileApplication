@@ -20,3 +20,12 @@ fun DriverDto.toDriver() = Driver(
     contactNumber = contactNumber,
     entrepreneurId = entrepreneurId
 )
+
+fun Driver.toDriverDto() = DriverDto(
+    id = id,
+    name = name,
+    dni = dni,
+    license = license,
+    contactNumber = contactNumber,
+    entrepreneurId = entrepreneurId
+)

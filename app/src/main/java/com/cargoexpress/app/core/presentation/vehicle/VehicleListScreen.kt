@@ -1,8 +1,5 @@
 package com.cargoexpress.app.core.presentation.vehicle
 
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,22 +7,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cargoexpress.app.R
-import com.cargoexpress.app.core.data.remote.vehicle.VehicleDto
+import com.cargoexpress.app.core.domain.Vehicle
+import com.cargoexpress.app.core.presentation.driver.driverList.HeaderSection
 import pe.edu.upc.appturismo.common.Constants
 
 @Composable
 fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
     var searchQuery by remember { mutableStateOf("") }
-
     val state by viewModel.state
 
-    // Obtener vehículos al cargar la pantalla
     LaunchedEffect(Unit) {
         viewModel.getVehiclesForEntrepreneur(entrepreneurId = Constants.ENTREPRENEUR_ID, token = Constants.TOKEN)
     }
@@ -45,32 +38,26 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
                 modifier = Modifier
                     .weight(1f)
                     .height(56.dp)
-                    .padding(end = 8.dp)
-                    .shadow(4.dp, RoundedCornerShape(24.dp)),
-                placeholder = { Text("Buscar vehículo ") }
+                    .padding(end = 8.dp),
+                placeholder = { Text("Buscar vehículo") }
             )
             Button(
                 onClick = {
                     viewModel.getVehiclesForEntrepreneur(entrepreneurId = Constants.ENTREPRENEUR_ID, token = Constants.TOKEN)
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF1F504)
-                ),
-                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF1F504)),
                 modifier = Modifier.padding(8.dp)
             ) {
                 Text("Buscar")
             }
         }
 
-        // Indicador de carga
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         }
 
-        // Mostrar mensaje de error o éxito
         state.message?.let { message ->
             Text(
                 text = message,
@@ -79,7 +66,6 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             )
         }
 
-        // Lista de vehículos filtrada
         LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 16.dp)) {
             val filteredVehicles = state.data?.filter { vehicle ->
                 vehicle.model.contains(searchQuery, ignoreCase = true) ||
@@ -90,7 +76,7 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
             if (filteredVehicles.isEmpty()) {
                 item {
                     Text(
-                        text = "No se encontraron vehículos",
+                        text = "",
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         color = MaterialTheme.colorScheme.error
                     )
@@ -106,7 +92,7 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel()) {
 }
 
 @Composable
-fun VehicleItem(vehicle: VehicleDto) {
+fun VehicleItem(vehicle: Vehicle) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,56 +143,5 @@ fun VehicleItem(vehicle: VehicleDto) {
                 Text(text = "Ver más")
             }
         }
-    }
-}
-
-
-@Composable
-fun HeaderSection() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
-    ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
-            modifier = Modifier.size(48.dp)
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-
-        Text(
-            text = "CargoExpress",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.Black
-        )
-        AdminBadge()
-    }
-}
-
-
-@Composable
-fun AdminBadge() {
-    val userName = remember { Constants.USER_NAME }
-
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .shadow(4.dp, RoundedCornerShape(8.dp))
-            .background(Color(0xFF3A3A3A)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = userName,
-            style = MaterialTheme.typography.bodySmall,
-
-            color = Color.Yellow,
-            modifier = Modifier.padding(15.dp)
-        )
     }
 }

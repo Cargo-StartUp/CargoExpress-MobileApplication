@@ -4,7 +4,6 @@
     import androidx.compose.foundation.layout.*
     import androidx.compose.foundation.rememberScrollState
     import androidx.compose.foundation.verticalScroll
-    import androidx.compose.material.*
     import androidx.compose.material.icons.Icons
     import androidx.compose.material.icons.filled.Visibility
     import androidx.compose.material.icons.filled.VisibilityOff
@@ -24,16 +23,12 @@
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
     import androidx.compose.ui.text.input.PasswordVisualTransformation
-    import androidx.compose.ui.tooling.preview.Preview
     import androidx.compose.ui.unit.dp
-    import androidx.lifecycle.viewmodel.compose.viewModel
     import androidx.navigation.NavController
     import pe.edu.upc.appturismo.common.UIState
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.text.input.VisualTransformation
     import com.cargoexpress.app.core.common.Routes
-    import com.cargoexpress.app.core.data.repository.ClientRepository
-    import com.cargoexpress.app.core.data.repository.EntrepreneurRepository
     @Composable
     fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel) {
         val state by viewModel.state.observeAsState(UIState())

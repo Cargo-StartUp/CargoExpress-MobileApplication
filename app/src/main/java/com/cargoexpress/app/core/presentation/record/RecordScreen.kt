@@ -20,58 +20,65 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 
 @Composable
-fun RecordScreen() {
+fun RecordScreen(navController: NavController) {
     val scrollState = rememberScrollState()
+    val token = ""
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .verticalScroll(scrollState),
-
-    verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         RecordItem(
             title = "Registrar Viajes",
             description = "Registrar o modificar un viaje de transporte para su empresa",
             registrarColor = Color(0xFFF1F504),
-            modificarColor = Color(0xFFF1F504)
+            modificarColor = Color(0xFFF1F504),
+            onRegistrarClick = {navController.navigate("register_trip?token=$token")}
         )
         RecordItem(
             title = "Registrar Gasto",
             description = "Registrar o modificar un gasto de un viaje de transporte para su empresa",
             registrarColor = Color(0xFFF1F504),
-            modificarColor = Color(0xFFF1F504)
+            modificarColor = Color(0xFFF1F504),
+            onRegistrarClick = { navController.navigate("register_expense?token=$token") }
         )
         RecordItem(
             title = "Registrar Conductor",
             description = "Registrar o modificar un conductor para su empresa",
             registrarColor = Color(0xFFF1F504),
-            modificarColor = Color(0xFFF1F504)
+            modificarColor = Color(0xFFF1F504),
+            onRegistrarClick = { navController.navigate("register_driver?token=$token") }
         )
         RecordItem(
             title = "Registrar Vehículo",
             description = "Registrar o modificar un vehículo de transporte para su empresa",
             registrarColor = Color(0xFFF1F504),
-            modificarColor = Color(0xFFF1F504)
+            modificarColor = Color(0xFFF1F504),
+            onRegistrarClick = { navController.navigate("register_vehicle?token=$token")}
         )
     }
 }
 
 @Composable
-fun RecordItem(title: String, description: String, registrarColor: Color, modificarColor: Color) {
-
+fun RecordItem(
+    title: String,
+    description: String,
+    registrarColor: Color,
+    modificarColor: Color,
+    onRegistrarClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White, shape = RoundedCornerShape(16.dp))
             .padding(16.dp)
-
-        ) {
-
+    ) {
         Text(
             text = title,
             fontSize = 20.sp,
@@ -92,9 +99,8 @@ fun RecordItem(title: String, description: String, registrarColor: Color, modifi
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-
             Button(
-                onClick = {  },
+                onClick = onRegistrarClick,
                 modifier = Modifier.weight(1f).padding(end = 4.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = registrarColor
@@ -102,7 +108,6 @@ fun RecordItem(title: String, description: String, registrarColor: Color, modifi
             ) {
                 Text(text = "Registrar", color = Color.Black)
             }
-
 
             Button(
                 onClick = {  },
@@ -116,4 +121,3 @@ fun RecordItem(title: String, description: String, registrarColor: Color, modifi
         }
     }
 }
-
