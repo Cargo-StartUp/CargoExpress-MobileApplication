@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
@@ -42,8 +43,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.DirectionsBusFilled
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.twotone.AppRegistration
+import androidx.compose.material.icons.twotone.LocalShipping
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,21 +56,24 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.cargoexpress.app.R
 import com.cargoexpress.app.core.data.remote.driver.DriverService
 import com.cargoexpress.app.core.data.remote.expense.ExpenseService
 import com.cargoexpress.app.core.data.repository.DriverRepository
 import com.cargoexpress.app.core.data.repository.ExpenseRepository
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
-import com.cargoexpress.app.core.presentation.record.registerDriver.RegisterDriverScreen
-import com.cargoexpress.app.core.presentation.record.registerDriver.RegisterDriverViewModel
+import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
+import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
 //import com.cargoexpress.app.core.presentation.record.registerExpense.RegisterExpenseScreen
-import com.cargoexpress.app.core.presentation.record.registerTrip.RegisterTripScreen
-import com.cargoexpress.app.core.presentation.record.registerTrip.RegisterTripViewModel
-import com.cargoexpress.app.core.presentation.record.registerVehicle.RegisterVehicleScreen
-import com.cargoexpress.app.core.presentation.record.registerVehicle.RegisterVehicleViewModel
+import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripScreen
+import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripViewModel
+import com.cargoexpress.app.core.presentation.vehicle.registerVehicle.RegisterVehicleScreen
+import com.cargoexpress.app.core.presentation.vehicle.registerVehicle.RegisterVehicleViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -166,7 +172,14 @@ class MainActivity : ComponentActivity() {
                 @Composable
                 fun MyAppBar(onProfileClick: () -> Unit) {
                     TopAppBar(
-                        title = { Text("CargoExpress") }, // Título de la AppBar
+                        title = { Text("CargoExpress") },
+                        navigationIcon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription = "App Logo",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        },// Título de la AppBar
                         actions = {
                             IconButton(onClick = { onProfileClick() }) {
                                 Icon(imageVector = Icons.Filled.AccountCircle, modifier = Modifier.size(100.dp), contentDescription = "Perfil")
@@ -187,37 +200,37 @@ class MainActivity : ComponentActivity() {
                         if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
                             NavigationBar {
                                 NavigationBarItem(
-                                    selected = currentDestination == "record",
-                                    onClick = { navController.navigate("record") },
+                                    selected = currentDestination == "trips",
+                                    onClick = { navController.navigate("trips") },
                                     icon = {
                                         Icon(
-                                            imageVector = Icons.TwoTone.AppRegistration,
-                                            contentDescription = "Registro"
+                                            imageVector = Icons.TwoTone.LocalShipping,
+                                            contentDescription = "Mis Viajes"
                                         )
                                     },
-                                    label = { Text("Registro") }
+                                    label = { Text("Mis Viajes") }
                                 )
                                 NavigationBarItem(
-                                    selected = currentDestination == "fleet",
-                                    onClick = { navController.navigate("fleet") },
+                                    selected = currentDestination == "vehicles",
+                                    onClick = { navController.navigate("vehicles") },
                                     icon = {
                                         Icon(
                                             Icons.Filled.DirectionsBusFilled,
-                                            contentDescription = "Flota"
+                                            contentDescription = "Mis Vehiculos"
                                         )
                                     },
-                                    label = { Text("Flota") }
+                                    label = { Text("Mis Vehiculos") }
                                 )
                                 NavigationBarItem(
-                                    selected = currentDestination == "trip",
-                                    onClick = { navController.navigate("trip") },
+                                    selected = currentDestination == "drivers",
+                                    onClick = { navController.navigate("drivers") },
                                     icon = {
                                         Icon(
-                                            Icons.Filled.Autorenew,
-                                            contentDescription = "Historial"
+                                            Icons.Filled.Groups,
+                                            contentDescription = "Mis Conductores"
                                         )
                                     },
-                                    label = { Text("Historial") }
+                                    label = { Text("Mis Conductores") }
                                 )
                                 NavigationBarItem(
                                     selected = currentDestination == "gps",
@@ -239,29 +252,30 @@ class MainActivity : ComponentActivity() {
                         startDestination = Routes.Login.routes,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(route = Routes.VehicleList.routes) {
-                            VehicleListScreen(viewModel = vehicleListViewModel)
-                        }
+                        // Login And Register
                         composable(route = Routes.Login.routes) {
                             LoginScreen(viewModel = loginViewModel, navController)
                         }
                         composable(route = Routes.Register.routes) {
                             RegisterScreen(navController, viewModel = registerViewModel)
                         }
-                        composable(route = Routes.Record.routes) {
-                            RecordScreen(navController = navController)
+
+                        composable(route = Routes.TripList.routes) {
+                            TripManagementScreen(tripRepository = tripRepository, navController)
                         }
-                        composable(route = "record") {
-                            RecordScreen(navController = navController)
+                        composable(route = "trips") {
+                            TripManagementScreen(tripRepository = tripRepository, navController)
                         }
-                        composable(route = "fleet") {
-                            FleetScreen(navController)
+                        composable(route = "vehicles") {
+                            VehicleListScreen(viewModel = vehicleListViewModel, navController)
+                            // FleetScreen(navController)
                         }
-                        composable(route = "trip") {
-                            TripManagementScreen(tripRepository = tripRepository)
+                        composable(route = "drivers") {
+                            DriverListScreen(viewModel = driverListViewModel, navController)
+                            // TripManagementScreen(tripRepository = tripRepository)
                         }
-                        composable(route = Routes.DriverList.routes) {
-                            DriverListScreen(viewModel = driverListViewModel)
+                        composable(route = "gps") {
+                            // GPS screen
                         }
 
 
@@ -277,7 +291,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "register_driver") { backStackEntry ->
                             val token = backStackEntry.arguments?.getString("token") ?: ""
                             val registerDriverViewModel = RegisterDriverViewModel(driverRepository)
-                            RegisterDriverScreen(viewModel = registerDriverViewModel) { driver ->
+                            RegisterDriverScreen(viewModel = registerDriverViewModel, navController = navController) { driver ->
 
                             }
                         }
@@ -285,7 +299,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "register_vehicle") { backStackEntry ->
                             val token = backStackEntry.arguments?.getString("token") ?: ""
                             val registerVehicleViewModel = RegisterVehicleViewModel(vehicleRepository)
-                            RegisterVehicleScreen(viewModel = registerVehicleViewModel) { vehicle ->
+                            RegisterVehicleScreen(viewModel = registerVehicleViewModel, navController = navController) { vehicle ->
                                 // Handle vehicle registration success
                             }
                         }
@@ -296,9 +310,6 @@ class MainActivity : ComponentActivity() {
                             RegisterTripScreen (viewModel = registerTripViewModel) { trip ->
                                 // Handle trip registration success
                             }
-                        }
-                        composable(route = "gps") {
-                            // GPS screen
                         }
                     }
                 }

@@ -71,7 +71,7 @@ class LoginViewModel(
     }
 
     private fun goToRegistroScreen(){
-        navController.navigate(Routes.Record.routes)
+        navController.navigate(Routes.TripList.routes)
     }
 
     private fun goToRegisterScreen() {

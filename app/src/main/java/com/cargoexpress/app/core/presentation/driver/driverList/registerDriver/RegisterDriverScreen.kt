@@ -1,19 +1,24 @@
-package com.cargoexpress.app.core.presentation.record.registerDriver
+package com.cargoexpress.app.core.presentation.driver.driverList.registerDriver
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cargoexpress.app.core.domain.Driver
 import pe.edu.upc.appturismo.common.Resource
 import kotlinx.coroutines.launch
+import androidx.navigation.NavController
 
 @Composable
 fun RegisterDriverScreen(
+    navController: NavController,
     viewModel: RegisterDriverViewModel = viewModel(),
     onDriverRegistered: (Driver) -> Unit
 ) {
@@ -46,6 +51,21 @@ fun RegisterDriverScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Text(
+                    text = "Registrar Nuevo Conductor",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
             InputField(
                 value = name,
                 label = "Nombre",
@@ -136,9 +156,10 @@ fun RegisterDriverScreen(
                                 dni = ""
                                 license = ""
                                 contactNumber = ""
-                                "Conductor agregado correctamente"
+                                navController.navigate("drivers")
+                                "Conductor registrado correctamente"
                             } else {
-                                "No se pudo agregar al conductor"
+                                "No se pudo registrar al conductor"
                             }
 
                             scope.launch {

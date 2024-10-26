@@ -1,4 +1,4 @@
-package com.cargoexpress.app.core.presentation.record.registerTrip
+package com.cargoexpress.app.core.presentation.trip.registerTrip
 
 import android.os.Build
 import androidx.annotation.RequiresApi

@@ -1,4 +1,4 @@
-package com.cargoexpress.app.core.presentation.record.registerVehicle
+package com.cargoexpress.app.core.presentation.vehicle.registerVehicle
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

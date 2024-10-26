@@ -1,4 +1,4 @@
-package com.cargoexpress.app.core.presentation.record.registerDriver
+package com.cargoexpress.app.core.presentation.driver.driverList.registerDriver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cargoexpress.app.core.data.repository.DriverRepository

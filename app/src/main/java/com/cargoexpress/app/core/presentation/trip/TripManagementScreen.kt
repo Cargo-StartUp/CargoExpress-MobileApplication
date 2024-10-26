@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,12 +16,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.domain.Trip
+import pe.edu.upc.appturismo.common.Constants
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun TripManagementScreen(
-    tripRepository: TripRepository
+    tripRepository: TripRepository,
+    navController: NavController
 ) {
     val factory = remember { TripManagementViewModelFactory(tripRepository) }
     val viewModel: TripManagementViewModel = viewModel(factory = factory)
@@ -27,58 +34,69 @@ fun TripManagementScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("ID") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            SearchBar(
-                query = searchQuery,
-                onQueryChange = {
-                    searchQuery = it
-                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
-                },
-                onSearchClick = {
-                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SearchBar(
+                    query = searchQuery,
+                    onQueryChange = {
+                        searchQuery = it
+                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                    },
+                    onSearchClick = {
+                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                    }
+                )
+
+                Button(
+                    onClick = {
+                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                    },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Icon(Icons.Default.Search, contentDescription = null)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = "Buscar")
                 }
+            }
+
+            FilterOptions(
+                selectedFilter = selectedFilter,
+                onFilterChange = { selectedFilter = it }
             )
 
-
-            Button(
-                onClick = {
-                    viewModel.updateSearchQuery(searchQuery, selectedFilter)
-                },
-                modifier = Modifier.padding(start = 8.dp)
-            ) {
-                Icon(Icons.Default.Search, contentDescription = null)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Buscar")
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+                uiState.message.isNotBlank() -> {
+                    Text(
+                        text = uiState.message,
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+                else -> {
+                    TripList(trips = uiState.data ?: emptyList())
+                }
             }
         }
 
-        FilterOptions(
-            selectedFilter = selectedFilter,
-            onFilterChange = { selectedFilter = it }
-        )
-
-        when {
-            uiState.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-            uiState.message.isNotBlank() -> {
-                Text(
-                    text = uiState.message,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-            else -> {
-                TripList(trips = uiState.data ?: emptyList())
-            }
+        FloatingActionButton(
+            onClick = {navController.navigate("register_trip?token=${Constants.TOKEN}") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = Color(0xFFF1F504)
+        ) {
+            Icon(Icons.Default.Add, contentDescription = "Add")
         }
     }
 }
@@ -119,37 +137,41 @@ fun TripList(trips: List<Trip>) {
     }
 }
 
+// IGNORAR LOS ERRORES DE DATE TIME
 @Composable
 fun TripCard(trip: Trip) {
+    val parsedDateTime = LocalDateTime.parse(trip.loadDate)
+    val formattedDate = parsedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Viaje #${trip.id}",
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF999900)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "FECHA DE CARGA: ${trip.loadDate}")
-            Text(text = "LUGAR DE CARGA: ${trip.loadLocation}")
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF00)),
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "Ver más")
+            Column {
+                Text(
+                    text = "Viaje #${trip.id}",
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF999900)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "FECHA DE CARGA: $formattedDate")
+                Text(text = "LUGAR DE CARGA: ${trip.loadLocation}")
+            }
+            IconButton(onClick = { /*EDITAR*/ }) {
+                Icon(Icons.Default.Edit, contentDescription = "Edit")
             }
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearchClick: () -> Unit) {

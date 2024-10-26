@@ -1,19 +1,24 @@
-package com.cargoexpress.app.core.presentation.record.registerVehicle
+package com.cargoexpress.app.core.presentation.vehicle.registerVehicle
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cargoexpress.app.core.domain.Vehicle
 import pe.edu.upc.appturismo.common.Resource
+import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterVehicleScreen(
+    navController: NavController,
     viewModel: RegisterVehicleViewModel = viewModel(),
     onVehicleRegistered: (Vehicle) -> Unit
 ) {
@@ -45,6 +50,22 @@ fun RegisterVehicleScreen(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+                Text(
+                    text = "Registrar Nuevo Vehículo",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             InputField(
                 value = model,
                 label = "Model",
@@ -125,9 +146,10 @@ fun RegisterVehicleScreen(
                                 tractorPlate = ""
                                 maxLoad = ""
                                 volume = ""
-                                "Vehicle registered successfully"
+                                navController.navigate("vehicles") // Navigate to VehicleListScreen
+                                "Vehicle registrado correctamente"
                             } else {
-                                "Failed to register vehicle"
+                                "No se pudo agregar el vehiculo"
                             }
 
                             scope.launch {
@@ -140,7 +162,9 @@ fun RegisterVehicleScreen(
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFEB3B)),
                 enabled = !isLoading
             ) {
