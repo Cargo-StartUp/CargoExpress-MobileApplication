@@ -123,7 +123,7 @@ fun TripDetailScreen(
                 }
             } else {
                 Button(
-                    onClick = { /* Navegar a la pantalla de agregar gastos */ },
+                    onClick = { navController.navigate("register_expense/$tripId") },
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
                     Text(text = "Agregar gastos")

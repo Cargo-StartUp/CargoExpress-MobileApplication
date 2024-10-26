@@ -1,5 +1,6 @@
 package com.cargoexpress.app.core.data.repository
 
+import android.util.Log
 import com.cargoexpress.app.core.data.remote.expense.ExpenseService
 import com.cargoexpress.app.core.data.remote.expense.toExpense
 import com.cargoexpress.app.core.data.remote.expense.toExpenseDto
@@ -11,19 +12,24 @@ import pe.edu.upc.appturismo.common.Resource
 
 class ExpenseRepository(private val expenseService: ExpenseService) {
 
+
     suspend fun addExpense(token: String, expense: Expense): Resource<Expense> {
         return try {
             val expenseDto = expense.toExpenseDto()
-            val response = expenseService.addExpense("Bearer $token", expenseDto)
+            val response = expenseService.addExpense(token, expenseDto)
             if (response.isSuccessful) {
-                Resource.Success(response.body()?.toExpense() ?: expense)
+                Log.d("ExpenseRepository", "POST successful: ${response.body()}")
+                Resource.Success(response.body()!!.toExpense())
             } else {
-                Resource.Error("Failed to add expense")
+                Log.d("ExpenseRepository", "POST failed: ${response.message()}")
+                Resource.Error("Error: ${response.message()}")
             }
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "An unknown error occurred")
+            Log.d("ExpenseRepository", "Exception: ${e.message}")
+            Resource.Error("Exception: ${e.message}")
         }
     }
+
 
     suspend fun getExpenses(token: String): Resource<List<Expense>> {
         return try {

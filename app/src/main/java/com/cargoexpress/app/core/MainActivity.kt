@@ -70,6 +70,8 @@ import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewMo
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
 import com.cargoexpress.app.core.presentation.trip.detailsTrip.TripDetailScreen
+import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseScreen
+import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseViewModel
 //import com.cargoexpress.app.core.presentation.record.registerExpense.RegisterExpenseScreen
 import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripScreen
 import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripViewModel
@@ -289,15 +291,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                       /*composable(
-                           route = "register_expense") { backStackEntry ->
-                            val token = backStackEntry.arguments?.getString("token") ?: ""
+                        composable(route = "register_expense/{tripId}") { backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
                             val registerExpenseViewModel = RegisterExpenseViewModel(expenseRepository)
-                            RegisterExpenseScreen(viewModel = registerExpenseViewModel) { expense ->
-                                // Handle driver registration success
+                            RegisterExpenseScreen(tripId = tripId, viewModel = registerExpenseViewModel) { expense ->
+
                             }
                         }
-*/
+
                         composable(route = "register_driver") { backStackEntry ->
                             val token = backStackEntry.arguments?.getString("token") ?: ""
                             val registerDriverViewModel = RegisterDriverViewModel(driverRepository)
@@ -310,7 +311,7 @@ class MainActivity : ComponentActivity() {
                             val token = backStackEntry.arguments?.getString("token") ?: ""
                             val registerVehicleViewModel = RegisterVehicleViewModel(vehicleRepository)
                             RegisterVehicleScreen(viewModel = registerVehicleViewModel, navController = navController) { vehicle ->
-                                // Handle vehicle registration success
+
                             }
                         }
 
@@ -318,7 +319,7 @@ class MainActivity : ComponentActivity() {
                             val token = backStackEntry.arguments?.getString("token") ?: ""
                             val registerTripViewModel = RegisterTripViewModel(tripRepository)
                             RegisterTripScreen (viewModel = registerTripViewModel) { trip ->
-                                // Handle trip registration success
+
                             }
                         }
                     }
