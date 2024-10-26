@@ -138,7 +138,7 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(ExpenseService::class.java)
 
-        val tripRepository = TripRepository(tripService)
+        val tripRepository = TripRepository(tripService, expenseService)
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
                 val vehicleRepository = VehicleRepository(vehicleService)
 
                 //Trip
-                val tripRepository = TripRepository(tripService)
+                val tripRepository = TripRepository(tripService, expenseService)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
 
@@ -281,7 +281,12 @@ class MainActivity : ComponentActivity() {
                         // MainActivity.kt
                         composable(route = "trip_details/{tripId}") { backStackEntry ->
                             val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
-                            TripDetailScreen(tripId = tripId, navController = navController, tripRepository = tripRepository)
+                            TripDetailScreen(
+                                tripId = tripId,
+                                navController = navController,
+                                tripRepository = tripRepository,
+                                expenseRepository = expenseRepository
+                            )
                         }
 
                        /*composable(

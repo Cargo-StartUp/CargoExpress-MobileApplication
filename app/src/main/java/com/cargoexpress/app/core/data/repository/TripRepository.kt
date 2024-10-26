@@ -2,6 +2,8 @@ package com.cargoexpress.app.core.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.cargoexpress.app.core.data.remote.expense.ExpenseService
+import com.cargoexpress.app.core.data.remote.expense.toExpense
 import com.cargoexpress.app.core.data.remote.expense.toExpenseDto
 import com.cargoexpress.app.core.data.remote.trip.TripDtoPost
 import com.cargoexpress.app.core.data.remote.trip.TripService
@@ -15,7 +17,8 @@ import kotlinx.coroutines.withContext
 import pe.edu.upc.appturismo.common.Constants
 import pe.edu.upc.appturismo.common.Resource
 
-class TripRepository(private val tripService: TripService) {
+class TripRepository(private val tripService: TripService,
+                     private val expenseService: ExpenseService) {
 
     suspend fun getTrips(token: String): Resource<List<Trip>> = withContext(Dispatchers.IO) {
         if (token.isBlank()) {
@@ -83,7 +86,7 @@ class TripRepository(private val tripService: TripService) {
     }
 
     suspend fun getExpenseByTripId(tripId: Int): Resource<Expense> {
-       //falta la logica,nd
+        //falta la logica,nd
         return Resource.Error<Expense>(message = "Not implemented")
     }
 
@@ -93,9 +96,9 @@ class TripRepository(private val tripService: TripService) {
         }
         return@withContext try {
             val expenseDto = expense.toExpenseDto()
-            val response = tripService.addExpense("Bearer ${Constants.TOKEN}", expenseDto)
+            val response = expenseService.addExpense("Bearer ${Constants.TOKEN}", expenseDto)
             if (response.isSuccessful) {
-                Resource.Success(data = response.body() ?: expense)
+                Resource.Success(data = response.body()?.toExpense() ?: expense)
             } else {
                 Resource.Error<Expense>(message = "Failed to add expense")
             }

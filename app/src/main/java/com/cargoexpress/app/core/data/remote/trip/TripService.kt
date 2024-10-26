@@ -24,11 +24,7 @@ interface TripService {
         @Body trip: TripDtoPost
     ): Response<TripDtoPost>
 
-    @POST("expenses")
-    suspend fun addExpense(
-        @Header("Authorization") token: String,
-        @Body expense: ExpenseDto
-    ): Response<Expense>
+
 
     @GET("trips/{tripId}/expense")
     suspend fun getExpenseByTripId(

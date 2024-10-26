@@ -11,19 +11,42 @@ import pe.edu.upc.appturismo.common.Resource
 
 class ExpenseRepository(private val expenseService: ExpenseService) {
 
-    suspend fun addExpense(expense: Expense): Resource<Expense> = withContext(Dispatchers.IO) {
-        if (Constants.TOKEN.isBlank()) {
-            return@withContext Resource.Error(message = "Token is required")
-        }
-        return@withContext try {
-            val response = expenseService.addExpense("Bearer ${Constants.TOKEN}", expense.toExpenseDto())
+    suspend fun addExpense(token: String, expense: Expense): Resource<Expense> {
+        return try {
+            val expenseDto = expense.toExpenseDto()
+            val response = expenseService.addExpense("Bearer $token", expenseDto)
             if (response.isSuccessful) {
-                Resource.Success(data = response.body()?.toExpense() ?: expense)
+                Resource.Success(response.body()?.toExpense() ?: expense)
             } else {
-                Resource.Error(message = "Failed to add expense: ${response.errorBody()?.string()}")
+                Resource.Error("Failed to add expense")
             }
         } catch (e: Exception) {
-            Resource.Error(message = e.message ?: "An unknown error occurred")
+            Resource.Error(e.message ?: "An unknown error occurred")
         }
     }
+
+    suspend fun getExpenses(token: String): Resource<List<Expense>> {
+        return try {
+            val response = expenseService.getExpenses("Bearer $token")
+            if (response.isSuccessful) {
+                val expenses = response.body()?.map { it.toExpense() } ?: emptyList()
+                Resource.Success(expenses)
+            } else {
+                Resource.Error("Failed to fetch expenses")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "An unknown error occurred")
+        }
+    }
+
+    suspend fun getExpensesByTripId(token: String, tripId: Int): Resource<List<Expense>> {
+        return when (val result = getExpenses(token)) {
+            is Resource.Success -> {
+                val filteredExpenses = result.data?.filter { it.tripId == tripId } ?: emptyList()
+                Resource.Success(filteredExpenses)
+            }
+            is Resource.Error -> Resource.Error(result.message ?: "Failed to fetch expenses")
+        }
+    }
+
 }

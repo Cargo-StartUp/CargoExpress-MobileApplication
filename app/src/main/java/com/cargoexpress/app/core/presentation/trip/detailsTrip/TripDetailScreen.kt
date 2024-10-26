@@ -17,7 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.cargoexpress.app.core.data.repository.ExpenseRepository
 import com.cargoexpress.app.core.data.repository.TripRepository
+import com.cargoexpress.app.core.domain.Expense
 import com.cargoexpress.app.core.domain.Trip
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -66,14 +68,17 @@ fun TripCard(trip: Trip, navController: NavController) {
 fun TripDetailScreen(
     tripId: Int,
     navController: NavController,
-    tripRepository: TripRepository
+    tripRepository: TripRepository,
+    expenseRepository: ExpenseRepository
 ) {
-    val factory = TripDetailViewModelFactory(tripRepository)
+    val factory = TripDetailViewModelFactory(tripRepository, expenseRepository)
     val viewModel: TripDetailViewModel = viewModel(factory = factory)
     val trip by viewModel.trip.collectAsState()
+    val expenses by viewModel.expenses.collectAsState()
 
     LaunchedEffect(tripId) {
         viewModel.loadTripDetails(tripId)
+        viewModel.loadExpensesByTripId(tripId)
     }
 
     Column(
@@ -111,6 +116,19 @@ fun TripDetailScreen(
                     DetailRow(label = "Client ID", value = it.clientId.toString())
                 }
             }
+
+            if (expenses.isNotEmpty()) {
+                expenses.forEach { expense ->
+                    ExpenseCard(expense = expense)
+                }
+            } else {
+                Button(
+                    onClick = { /* Navegar a la pantalla de agregar gastos */ },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(text = "Agregar gastos")
+                }
+            }
         }
     }
 }
@@ -140,5 +158,33 @@ fun DetailRow(label: String, value: String) {
             color = Color(0xFF333333),
             style = MaterialTheme.typography.bodyMedium
         )
+    }
+}
+@Composable
+fun ExpenseCard(expense: Expense) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Gastos del viaje",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF999900)
+            )
+            Divider(modifier = Modifier.padding(vertical = 8.dp), color = Color(0xFFCCCCCC))
+
+            DetailRow(label = "Monto de combustible", value = "${expense.fuelAmount} USD")
+            DetailRow(label = "Descripción de combustible", value = expense.fuelDescription)
+            DetailRow(label = "Monto de viáticos", value = "${expense.viaticsAmount} USD")
+            DetailRow(label = "Descripción de viáticos", value = expense.viaticsDescription)
+            DetailRow(label = "Monto de peajes", value = "${expense.tollsAmount} USD")
+            DetailRow(label = "Descripción de peajes", value = expense.tollsDescription)
+        }
     }
 }

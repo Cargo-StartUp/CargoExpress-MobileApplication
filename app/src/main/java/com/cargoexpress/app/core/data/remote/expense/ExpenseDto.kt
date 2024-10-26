@@ -3,7 +3,6 @@ package com.cargoexpress.app.core.data.remote.expense
 import com.cargoexpress.app.core.domain.Expense
 
 data class ExpenseDto(
-    val id: Int,
     val fuelAmount: Double,
     val fuelDescription: String,
     val viaticsAmount: Double,
@@ -14,7 +13,7 @@ data class ExpenseDto(
 )
 
 fun ExpenseDto.toExpense() = Expense(
-    id = id,
+    id = 0,
     fuelAmount = fuelAmount,
     fuelDescription = fuelDescription,
     viaticsAmount = viaticsAmount,
@@ -25,7 +24,6 @@ fun ExpenseDto.toExpense() = Expense(
 )
 
 fun Expense.toExpenseDto() = ExpenseDto(
-    id = id,
     fuelAmount = fuelAmount,
     fuelDescription = fuelDescription,
     viaticsAmount = viaticsAmount,
