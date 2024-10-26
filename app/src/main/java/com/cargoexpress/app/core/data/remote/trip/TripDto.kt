@@ -26,9 +26,9 @@ data class TripData(
     val unloadDate: String
 )
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-
 @RequiresApi(Build.VERSION_CODES.O)
 fun TripDto.toTrip() = Trip(
     id = id,

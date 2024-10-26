@@ -1,6 +1,8 @@
 package com.cargoexpress.app.core.data.remote.trip
 
 
+import com.cargoexpress.app.core.data.remote.expense.ExpenseDto
+import com.cargoexpress.app.core.domain.Expense
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -21,5 +23,17 @@ interface TripService {
         @Header("Authorization") token: String,
         @Body trip: TripDtoPost
     ): Response<TripDtoPost>
+
+    @POST("expenses")
+    suspend fun addExpense(
+        @Header("Authorization") token: String,
+        @Body expense: ExpenseDto
+    ): Response<Expense>
+
+    @GET("trips/{tripId}/expense")
+    suspend fun getExpenseByTripId(
+        @Path("tripId") tripId: Int,
+        @Header("Authorization") token: String
+    ): Response<Expense>
 
 }

@@ -1,5 +1,10 @@
 package com.cargoexpress.app.core.presentation.trip
 
+
+
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -84,13 +89,13 @@ fun TripManagementScreen(
                     )
                 }
                 else -> {
-                    TripList(trips = uiState.data ?: emptyList())
+                    TripList(trips = uiState.data ?: emptyList(), navController = navController)
                 }
             }
         }
 
         FloatingActionButton(
-            onClick = {navController.navigate("register_trip?token=${Constants.TOKEN}") },
+            onClick = { navController.navigate("register_trip?token=${Constants.TOKEN}") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
@@ -124,7 +129,7 @@ fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit) {
 }
 
 @Composable
-fun TripList(trips: List<Trip>) {
+fun TripList(trips: List<Trip>, navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -132,19 +137,20 @@ fun TripList(trips: List<Trip>) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(trips) { trip ->
-            TripCard(trip = trip)
+            TripCard(trip = trip, navController = navController)
         }
     }
 }
 
-// IGNORAR LOS ERRORES DE DATE TIME
 @Composable
-fun TripCard(trip: Trip) {
+fun TripCard(trip: Trip, navController: NavController) {
     val parsedDateTime = LocalDateTime.parse(trip.loadDate)
     val formattedDate = parsedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { navController.navigate("trip_details/${trip.id}") },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -172,6 +178,7 @@ fun TripCard(trip: Trip) {
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearchClick: () -> Unit) {

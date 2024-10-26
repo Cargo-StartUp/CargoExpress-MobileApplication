@@ -69,6 +69,7 @@ import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
+import com.cargoexpress.app.core.presentation.trip.detailsTrip.TripDetailScreen
 //import com.cargoexpress.app.core.presentation.record.registerExpense.RegisterExpenseScreen
 import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripScreen
 import com.cargoexpress.app.core.presentation.trip.registerTrip.RegisterTripViewModel
@@ -277,7 +278,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = "gps") {
                             // GPS screen
                         }
-
+                        // MainActivity.kt
+                        composable(route = "trip_details/{tripId}") { backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
+                            TripDetailScreen(tripId = tripId, navController = navController, tripRepository = tripRepository)
+                        }
 
                        /*composable(
                            route = "register_expense") { backStackEntry ->
