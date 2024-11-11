@@ -69,6 +69,7 @@ import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
+import com.cargoexpress.app.core.presentation.profile.UserProfileScreen
 import com.cargoexpress.app.core.presentation.trip.detailsTrip.TripDetailScreen
 import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseScreen
 import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseViewModel
@@ -194,7 +195,7 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
                             MyAppBar(onProfileClick = {
-                                // Navegar a la pantalla de perfil
+
                                 navController.navigate("profile")
                             })
                         }
@@ -322,6 +323,11 @@ class MainActivity : ComponentActivity() {
 
                             }
                         }
+
+
+                            composable(route = "profile") {
+                                UserProfileScreen()
+                            }
                     }
                 }
             }
