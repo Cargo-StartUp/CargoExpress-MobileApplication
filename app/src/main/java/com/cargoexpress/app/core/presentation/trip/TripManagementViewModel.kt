@@ -12,7 +12,7 @@ import pe.edu.upc.appturismo.common.Resource
 import pe.edu.upc.appturismo.common.UIState
 
 class TripManagementViewModel(
-    private val tripRepository: TripRepository
+private val tripRepository: TripRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState<List<Trip>>(isLoading = true))
@@ -41,16 +41,28 @@ class TripManagementViewModel(
         }
     }
 
-    fun updateSearchQuery(query: String, selectedFilter: String) {
-        _searchQuery.value = query
-        filterTrips(query, selectedFilter)
+    fun updateSearchQuery(date: String, filter: String) {
+        viewModelScope.launch {
+            val trips = tripRepository.getTrips(Constants.TOKEN)
+            if (trips is Resource.Success) {
+                val filteredTrips = trips.data?.filter { trip ->
+                    when (filter) {
+                        "Fecha" -> trip.loadDate.startsWith(date)
+                        else -> true
+                    }
+                }
+                _uiState.value = _uiState.value.copy(data = filteredTrips)
+            } else {
+                _uiState.value = _uiState.value.copy(message = "Error fetching trips")
+            }
+        }
     }
 
     private fun filterTrips(query: String, selectedFilter: String) {
         val filteredTrips = allTrips.filter { trip ->
             when (selectedFilter) {
                 "ID" -> trip.id.toString().contains(query, ignoreCase = true)
-                "Fecha" -> trip.loadDate.toString().contains(query, ignoreCase = true)
+                "Fecha" -> trip.loadDate.contains(query, ignoreCase = true)
                 "Lugar" -> trip.loadLocation.contains(query, ignoreCase = true)
                 else -> false
             }
@@ -62,5 +74,14 @@ class TripManagementViewModel(
     fun handleError(exception: Exception) {
         val message = exception.message ?: "Unknown error"
         _uiState.value = UIState(isLoading = false, message = "Error: $message")
+    }
+
+    fun updateSortOrder(isAscending: Boolean) {
+        val sortedTrips = if (isAscending) {
+            allTrips.sortedBy { it.id }
+        } else {
+            allTrips.sortedByDescending { it.id }
+        }
+        _uiState.value = _uiState.value.copy(data = sortedTrips, isLoading = false)
     }
 }

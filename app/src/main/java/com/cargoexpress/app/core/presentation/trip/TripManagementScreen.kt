@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +29,10 @@ import com.cargoexpress.app.core.domain.Trip
 import pe.edu.upc.appturismo.common.Constants
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import android.app.DatePickerDialog
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
+import java.util.Calendar
 
 @Composable
 fun TripManagementScreen(
@@ -36,8 +42,9 @@ fun TripManagementScreen(
     val factory = remember { TripManagementViewModelFactory(tripRepository) }
     val viewModel: TripManagementViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedFilter by remember { mutableStateOf("ID") }
+    var isAscending by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    var selectedDate by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -49,32 +56,40 @@ fun TripManagementScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SearchBar(
-                    query = searchQuery,
-                    onQueryChange = {
-                        searchQuery = it
-                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
-                    },
-                    onSearchClick = {
-                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
-                    }
-                )
-
-                Button(
+                IconButton(
                     onClick = {
-                        viewModel.updateSearchQuery(searchQuery, selectedFilter)
+                        isAscending = !isAscending
+                        viewModel.updateSortOrder(isAscending)
                     },
                     modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    Icon(Icons.Default.Search, contentDescription = null)
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Buscar")
+                    Icon(Icons.Default.Sort, contentDescription = "Sort")
+                }
+
+                IconButton(
+                    onClick = {
+                        showDatePicker(context) { date ->
+                            selectedDate = date
+                        }
+                    },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Icon(Icons.Default.CalendarToday, contentDescription = "Filter by Date")
+                }
+
+                Button(
+                    onClick = {
+                        viewModel.updateSearchQuery(selectedDate, "Fecha")
+                    },
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Text("Aceptar")
                 }
             }
 
             FilterOptions(
-                selectedFilter = selectedFilter,
-                onFilterChange = { selectedFilter = it }
+                selectedFilter = "Fecha",
+                onFilterChange = { /* Lógica para cambiar el filtro */ }
             )
 
             when {
@@ -104,6 +119,21 @@ fun TripManagementScreen(
             Icon(Icons.Default.Add, contentDescription = "Add")
         }
     }
+}
+
+fun showDatePicker(context: Context, onDateSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            calendar.set(year, month, dayOfMonth)
+            val selectedDate = String.format("%04d-%02d-%02dT00:00:00", year, month + 1, dayOfMonth)
+            onDateSelected(selectedDate)
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    ).show()
 }
 
 @Composable
