@@ -4,14 +4,21 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cargoexpress.app.core.data.repository.EntrepreneurRepository
 import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.domain.Trip
 import kotlinx.coroutines.launch
 import pe.edu.upc.appturismo.common.Constants
 import pe.edu.upc.appturismo.common.Resource
+import com.cargoexpress.app.core.data.remote.driver.DriverDto
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class RegisterTripViewModel(
-    private val tripRepository: TripRepository
+    private val tripRepository: TripRepository,
 ) : ViewModel() {
     var tripName: String = ""
     var cargoType: String = ""

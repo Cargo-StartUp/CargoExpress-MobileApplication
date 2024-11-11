@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 import pe.edu.upc.appturismo.common.Constants
 import pe.edu.upc.appturismo.common.Resource
 import pe.edu.upc.appturismo.common.UIState
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TripManagementViewModel(
     private val tripRepository: TripRepository
@@ -50,8 +52,9 @@ class TripManagementViewModel(
         val filteredTrips = allTrips.filter { trip ->
             when (selectedFilter) {
                 "ID" -> trip.id.toString().contains(query, ignoreCase = true)
-                "Fecha" -> trip.loadDate.toString().contains(query, ignoreCase = true)
-                "Lugar" -> trip.loadLocation.contains(query, ignoreCase = true)
+                "Nombre" -> trip.tripName.contains(query, ignoreCase = true)
+                "Fecha" -> trip.loadDate.toString().contains(query, ignoreCase = true) ||
+                        trip.unloadDate.toString().contains(query, ignoreCase = true)
                 else -> false
             }
         }

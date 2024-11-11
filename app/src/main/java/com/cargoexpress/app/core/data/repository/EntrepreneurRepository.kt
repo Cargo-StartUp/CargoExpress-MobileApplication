@@ -4,6 +4,10 @@ import com.cargoexpress.app.core.data.remote.user.EntrepreneurDto
 import com.cargoexpress.app.core.data.remote.user.EntrepreneurRequestDto
 import com.cargoexpress.app.core.data.remote.user.EntrepreneurService
 import com.cargoexpress.app.core.data.remote.vehicle.VehicleDto
+import com.cargoexpress.app.core.data.remote.driver.DriverDto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import pe.edu.upc.appturismo.common.Resource
 
 class EntrepreneurRepository(private val entrepreneurService: EntrepreneurService) {
 
@@ -12,9 +16,8 @@ class EntrepreneurRepository(private val entrepreneurService: EntrepreneurServic
             val response = entrepreneurService.createEntrepreneur(request, "Bearer $token")
             if (response.isSuccessful) {
                 val entrepreneur = response.body()
-                // Aquí verificamos que el entrepreneur no sea null y obtenemos el entrepreneurId
                 entrepreneur?.let {
-                    val entrepreneurId = it.id  // Almacenamos el entrepreneurId
+                    val entrepreneurId = it.id
                     Result.success(entrepreneurId)
                 } ?: Result.failure(Exception("Error: No se pudo obtener el entrepreneurId"))
             } else {
@@ -30,7 +33,7 @@ class EntrepreneurRepository(private val entrepreneurService: EntrepreneurServic
             val response = entrepreneurService.getEntrepreneurByUserId(userId, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
-                    Result.success(it)  // Retornar el EntrepreneurDto si está disponible
+                    Result.success(it)
                 } ?: Result.failure(Exception("Error: No se pudo obtener el empresario"))
             } else {
                 Result.failure(Exception("Error obteniendo empresario: ${response.code()}"))
@@ -45,13 +48,26 @@ class EntrepreneurRepository(private val entrepreneurService: EntrepreneurServic
             val response = entrepreneurService.getVehiclesEntrepreneurs(id, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
-                    Result.success(it)  // La respuesta es ahora una lista
+                    Result.success(it)
                 } ?: Result.failure(Exception("Cuerpo de la respuesta vacío"))
             } else {
                 Result.failure(Exception("Error: ${response.code()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    suspend fun getDriversByEntrepreneurId(entrepreneurId: Int, token: String): Resource<List<DriverDto>> {
+        return try {
+            val response = entrepreneurService.getDriversByEntrepreneurId(entrepreneurId, "Bearer $token")
+            if (response.isSuccessful) {
+                Resource.Success(response.body() ?: emptyList())
+            } else {
+                Resource.Error("Error fetching drivers")
+            }
+        } catch (e: Exception) {
+            Resource.Error("Exception: ${e.message}")
         }
     }
 }

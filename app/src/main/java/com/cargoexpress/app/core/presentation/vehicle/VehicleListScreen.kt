@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.cargoexpress.app.core.domain.Vehicle
 import pe.edu.upc.appturismo.common.Constants
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel(), navController: NavController) {
@@ -45,7 +46,8 @@ fun VehicleListScreen(viewModel: VehicleListViewModel = viewModel(), navControll
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 placeholder = { Text("Buscar vehículo") },
-                colors = TextFieldDefaults.textFieldColors(containerColor = Color(0xFFF1F5F9))
+                colors = TextFieldDefaults.textFieldColors(containerColor = Color(0xFFF1F5F9)),
+                singleLine = true
             )
 
             // Lista de vehículos

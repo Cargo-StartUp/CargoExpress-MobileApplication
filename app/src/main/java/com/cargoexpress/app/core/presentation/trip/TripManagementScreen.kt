@@ -1,7 +1,4 @@
 package com.cargoexpress.app.core.presentation.trip
-
-
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -10,14 +7,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,6 +36,8 @@ fun TripManagementScreen(
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("ID") }
+
+    var isDescending by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -71,10 +71,11 @@ fun TripManagementScreen(
                     Text(text = "Buscar")
                 }
             }
-
             FilterOptions(
                 selectedFilter = selectedFilter,
-                onFilterChange = { selectedFilter = it }
+                onFilterChange = { selectedFilter = it },
+                isDescending = isDescending,
+                onOrderChange = { isDescending = !isDescending }
             )
 
             when {
@@ -89,7 +90,7 @@ fun TripManagementScreen(
                     )
                 }
                 else -> {
-                    TripList(trips = uiState.data ?: emptyList(), navController = navController)
+                    TripList(trips = uiState.data ?: emptyList(), navController = navController, isDescending = isDescending)
                 }
             }
         }
@@ -107,36 +108,52 @@ fun TripManagementScreen(
 }
 
 @Composable
-fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit) {
+fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit, isDescending: Boolean, onOrderChange: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        listOf("ID", "Fecha", "Lugar").forEach { filter ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                RadioButton(
-                    selected = selectedFilter == filter,
-                    onClick = { onFilterChange(filter) }
-                )
-                Text(text = filter)
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            listOf("ID", "Nombre", "Fecha").forEach { filter ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    RadioButton(
+                        selected = selectedFilter == filter,
+                        onClick = { onFilterChange(filter) }
+                    )
+                    Text(text = filter)
+                }
             }
+        }
+        IconButton(onClick = onOrderChange) {
+            Icon(
+                imageVector = if (isDescending) Icons.Default.FilterList else Icons.Default.FilterListOff,
+                contentDescription = if (isDescending) "Orden Descendente" else "Orden Ascendente"
+            )
         }
     }
 }
 
 @Composable
-fun TripList(trips: List<Trip>, navController: NavController) {
+fun TripList(trips: List<Trip>, navController: NavController, isDescending: Boolean) {
+    val sortedTrips = if (isDescending) {
+        trips.sortedByDescending { it.id }
+    } else {
+        trips.sortedBy { it.id }
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(trips) { trip ->
+        items(sortedTrips) { trip ->
             TripCard(trip = trip, navController = navController)
         }
     }
@@ -144,8 +161,11 @@ fun TripList(trips: List<Trip>, navController: NavController) {
 
 @Composable
 fun TripCard(trip: Trip, navController: NavController) {
-    val parsedDateTime = LocalDateTime.parse(trip.loadDate)
-    val formattedDate = parsedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+    val LoadDateFormat = LocalDateTime.parse(trip.loadDate)
+    val LoadDate = LoadDateFormat.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+
+    val UnloadDateFormat = LocalDateTime.parse(trip.unloadDate)
+    val UnloadDate = UnloadDateFormat.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
 
     Card(
         modifier = Modifier
@@ -164,16 +184,35 @@ fun TripCard(trip: Trip, navController: NavController) {
         ) {
             Column {
                 Text(
-                    text = "Viaje #${trip.id}",
+                    text = "Viaje ${trip.tripName} #${trip.id}",
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF999900)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "FECHA DE CARGA: $formattedDate")
-                Text(text = "LUGAR DE CARGA: ${trip.loadLocation}")
+                Text(
+                    text = AnnotatedString.Builder().apply {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("FECHA DE CARGA: ")
+                        }
+                        append(LoadDate)
+                    }.toAnnotatedString()
+                )
+                Text(
+                    text = AnnotatedString.Builder().apply {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("FECHA DE DESCARGA: ")
+                        }
+                        append(UnloadDate)
+                    }.toAnnotatedString()
+                )
             }
-            IconButton(onClick = { /*EDITAR*/ }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+            Column {
+                IconButton(onClick = { navController.navigate("edit_trip/${trip.id}") }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                }
+                IconButton(onClick = { /*GPS*/ }) {
+                    Icon(Icons.Default.LocationOn, contentDescription = "GPS")
+                }
             }
         }
     }
@@ -202,15 +241,5 @@ fun SearchBar(query: String, onQueryChange: (String) -> Unit, onSearchClick: () 
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
             )
         )
-        Button(
-            onClick = onSearchClick,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF00)),
-            modifier = Modifier.height(56.dp)
-        ) {
-            Text(
-                text = "Buscar",
-                color = Color.Black
-            )
-        }
     }
 }

@@ -17,9 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cargoexpress.app.core.domain.Trip
 import kotlinx.coroutines.launch
+import pe.edu.upc.appturismo.common.Constants
 import pe.edu.upc.appturismo.common.Resource
 import java.text.SimpleDateFormat
 import java.util.*
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.cargoexpress.app.core.data.remote.driver.DriverDto
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -39,7 +46,7 @@ fun RegisterTripScreen(
     var driverId by remember { mutableStateOf("") }
     var vehicleId by remember { mutableStateOf("") }
     var clientId by remember { mutableStateOf("") }
-    var entrepreneurId by remember { mutableStateOf("") }
+    var entrepreneurId by remember { mutableStateOf(Constants.ENTREPRENEUR_ID.toString()) }
     var isLoading by remember { mutableStateOf(false) }
 
     var tripNameError by remember { mutableStateOf<String?>(null) }
@@ -53,6 +60,7 @@ fun RegisterTripScreen(
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     val isoFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
     val context = LocalContext.current
+
 
     fun showDatePicker(onDateSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
@@ -123,7 +131,7 @@ fun RegisterTripScreen(
                                 driverId = ""
                                 vehicleId = ""
                                 clientId = ""
-                                entrepreneurId = ""
+                                entrepreneurId = Constants.ENTREPRENEUR_ID.toString()
                                 "Trip registered successfully"
                             } else {
                                 "Failed to register trip"
@@ -220,6 +228,7 @@ fun RegisterTripScreen(
             InputField(value = driverId, label = "Driver ID", onValueChange = { driverId = it }, error = null)
             InputField(value = vehicleId, label = "Vehicle ID", onValueChange = { vehicleId = it }, error = null)
             InputField(value = clientId, label = "Client ID", onValueChange = { clientId = it }, error = null)
+            InputField(value = entrepreneurId, label = "Entrepreneur ID", onValueChange = { entrepreneurId = it }, error = null)
 
             if (isLoading) {
                 CircularProgressIndicator(color = Color(0xFFFFEB3B))

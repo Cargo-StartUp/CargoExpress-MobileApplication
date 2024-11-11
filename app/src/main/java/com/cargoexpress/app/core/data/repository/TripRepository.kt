@@ -43,7 +43,6 @@ class TripRepository(private val tripService: TripService,
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addTrip(trip: Trip): Resource<Trip> = withContext(Dispatchers.IO) {
         if (Constants.TOKEN.isBlank()) {
@@ -56,6 +55,24 @@ class TripRepository(private val tripService: TripService,
                 Resource.Success(data = response.body()?.toTrip() ?: tripDtoPost.toTrip())
             } else {
                 Resource.Error(message = "Failed to add trip")
+            }
+        } catch (e: Exception) {
+            Resource.Error(message = e.message ?: "An unknown error occurred")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun updateTrip(trip: Trip): Resource<Trip> = withContext(Dispatchers.IO) {
+        if (Constants.TOKEN.isBlank()) {
+            return@withContext Resource.Error(message = "Token is required")
+        }
+        return@withContext try {
+            val tripDtoPost = trip.toTripDto()
+            val response = tripService.updateTrip(trip.id, "Bearer ${Constants.TOKEN}", tripDtoPost)
+            if (response.isSuccessful) {
+                Resource.Success(data = response.body()?.toTrip() ?: tripDtoPost.toTrip())
+            } else {
+                Resource.Error(message = "Failed to update trip")
             }
         } catch (e: Exception) {
             Resource.Error(message = e.message ?: "An unknown error occurred")

@@ -70,6 +70,7 @@ import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewMo
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
 import com.cargoexpress.app.core.presentation.trip.detailsTrip.TripDetailScreen
+import com.cargoexpress.app.core.presentation.trip.editTrip.TripEditScreen
 import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseScreen
 import com.cargoexpress.app.core.presentation.trip.registerExpense.RegisterExpenseViewModel
 //import com.cargoexpress.app.core.presentation.record.registerExpense.RegisterExpenseScreen
@@ -169,6 +170,7 @@ class MainActivity : ComponentActivity() {
 
                 //Trip
                 val tripRepository = TripRepository(tripService, expenseService)
+                val entrepreneurRepository = EntrepreneurRepository(entrepreneurService)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
 
@@ -321,6 +323,11 @@ class MainActivity : ComponentActivity() {
                             RegisterTripScreen (viewModel = registerTripViewModel) { trip ->
 
                             }
+                        }
+
+                        composable("edit_trip/{tripId}") { backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
+                            TripEditScreen(tripId = tripId, tripRepository = tripRepository, navController = navController)
                         }
                     }
                 }
