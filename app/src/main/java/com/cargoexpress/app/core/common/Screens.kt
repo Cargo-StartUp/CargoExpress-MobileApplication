@@ -1,6 +1,7 @@
 package com.cargoexpress.app.core.common
 
 object Screens {
+    // Auth Screens 
     val registerScreen = Screen("registerScreen")
     val fleetScreen = Screen("fleetScreen")
     val historyScreen = Screen("historyScreen")
