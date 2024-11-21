@@ -1,8 +1,12 @@
     package com.cargoexpress.app.core.presentation.register
 
+    import android.net.Uri
+    import androidx.activity.compose.rememberLauncherForActivityResult
+    import androidx.activity.result.contract.ActivityResultContracts
     import androidx.compose.foundation.clickable
     import androidx.compose.foundation.layout.*
     import androidx.compose.foundation.rememberScrollState
+    import androidx.compose.foundation.shape.CircleShape
     import androidx.compose.foundation.verticalScroll
     import androidx.compose.material.icons.Icons
     import androidx.compose.material.icons.filled.Visibility
@@ -22,13 +26,17 @@
     import androidx.compose.runtime.livedata.observeAsState
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
+    import androidx.compose.ui.draw.clip
     import androidx.compose.ui.text.input.PasswordVisualTransformation
     import androidx.compose.ui.unit.dp
     import androidx.navigation.NavController
     import pe.edu.upc.appturismo.common.UIState
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.text.input.VisualTransformation
+    import coil.compose.AsyncImage
     import com.cargoexpress.app.core.common.Routes
+    import com.cargoexpress.app.core.presentation.ImagePicker
+
     @Composable
     fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel) {
         val state by viewModel.state.observeAsState(UIState())
@@ -40,7 +48,7 @@
         var phone by remember { mutableStateOf("") }
         var ruc by remember { mutableStateOf("") }
         var address by remember { mutableStateOf("") }
-        var logo by remember { mutableStateOf("") } // Campo solo para empresario
+        var logoUri by remember { mutableStateOf<Uri?>(null) } // Cambiar logo a Uri
         var showPassword by remember { mutableStateOf(false) }
 
         var isClient by remember { mutableStateOf(true) } // Estado para controlar si es cliente o empresario
@@ -127,7 +135,10 @@
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                         trailingIcon = {
                             IconButton(onClick = { showPassword = !showPassword }) {
-                                Icon(imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility, contentDescription = null)
+                                Icon(
+                                    imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                    contentDescription = null
+                                )
                             }
                         },
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
@@ -162,12 +173,16 @@
                     )
 
                     if (!isClient) {
-                        TextField(
-                            value = logo,
-                            onValueChange = { logo = it },
-                            label = { Text("Cargar logo (URL)") },
-                            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                        Text(
+                            text = "Selecciona el logo de tu empresa:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
+
+                        // Selector de imagen para Empresario
+                        ImagePicker(onImageSelected = { uri ->
+                            logoUri = uri // Guardar URI seleccionada
+                        })
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -182,7 +197,7 @@
                                 ruc = ruc,
                                 address = address,
                                 isEntrepreneur = !isClient,
-                                logoImage = if (!isClient) logo else null
+                                logoImage = logoUri?.toString() // Convertir URI a String para enviarla al servidor
                             )
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Yellow),
@@ -209,8 +224,6 @@
                         CircularProgressIndicator()
                     }
                 }
-
             }
         }
     }
-

@@ -43,6 +43,21 @@ class EntrepreneurRepository(private val entrepreneurService: EntrepreneurServic
         }
     }
 
+    suspend fun getEntrepreneurById(entrepreneurId: Int, token: String): Result<EntrepreneurDto> {
+        return try {
+            val response = entrepreneurService.getEntrepreneurById(entrepreneurId, "Bearer $token")
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Error: No se pudo obtener el empresario"))
+            } else {
+                Result.failure(Exception("Error obteniendo empresario: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getVehiclesByEntrepreneurId(id: Int, token: String): Result<List<VehicleDto>> {
         return try {
             val response = entrepreneurService.getVehiclesEntrepreneurs(id, "Bearer $token")
