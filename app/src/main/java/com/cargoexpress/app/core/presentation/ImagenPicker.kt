@@ -16,7 +16,6 @@ import coil.compose.AsyncImage
 fun ImagePicker(onImageSelected: (Uri?) -> Unit) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Launcher para seleccionar la imagen
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -25,12 +24,11 @@ fun ImagePicker(onImageSelected: (Uri?) -> Unit) {
     }
 
     Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
-        // Botón para abrir el selector de imágenes
         Button(onClick = { launcher.launch("image/*") }) {
             Text(text = "Seleccionar Imagen")
         }
 
-        // Mostrar la imagen seleccionada si existe
+
         selectedImageUri?.let { uri ->
             AsyncImage(
                 model = uri,

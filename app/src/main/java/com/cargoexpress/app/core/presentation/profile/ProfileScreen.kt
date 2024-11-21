@@ -26,23 +26,22 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.cargoexpress.app.core.presentation.ImagePicker
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
     val entrepreneurState by viewModel.entrepreneurState
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.getEntrepreneurProfile(Constants.ENTREPRENEUR_ID)
         println("ENTREPRENEUR_ID: ${Constants.ENTREPRENEUR_ID}, TOKEN: ${Constants.TOKEN}")
-
     }
 
     Scaffold(
         snackbarHost = { SnackbarHost(remember { SnackbarHostState() }) }
-
     ) { paddingValues ->
         Column(
-
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -50,7 +49,6 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
             if (entrepreneurState.isLoading) {
                 CircularProgressIndicator()
             } else if (entrepreneurState.data != null) {
@@ -58,7 +56,7 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
 
                 // Logo y nombre
                 if (entrepreneur != null) {
-                    ProfileHeader(entrepreneur)
+                    ProfileHeader(entrepreneur, selectedImageUri)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -86,6 +84,13 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
                 ) {
                     Text(text = "Cerrar Sesión", color = Color.Black, fontWeight = FontWeight.Bold)
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Image Picker
+                ImagePicker { uri ->
+                    selectedImageUri = uri
+                }
             } else {
                 Text("Error al cargar los datos.", style = MaterialTheme.typography.bodyMedium)
             }
@@ -93,22 +98,36 @@ fun ProfileScreen(viewModel: ProfileViewModel, navController: NavController) {
     }
 }
 
+
 @Composable
-fun ProfileHeader(entrepreneur: EntrepreneurDto) {
+fun ProfileHeader(entrepreneur: EntrepreneurDto, selectedImageUri: Uri?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Imagen del emprendedor en un círculo
-        AsyncImage(
-            model = entrepreneur.logoImage, // URL dinámica de la imagen
-            contentDescription = "Logo del emprendedor",
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .padding(8.dp),
-            placeholder = painterResource(R.drawable.ic_placeholder), // Imagen local como placeholder
-            error = painterResource(R.drawable.ic_error) // Imagen local en caso de error
-        )
+        if (selectedImageUri != null) {
+            AsyncImage(
+                model = selectedImageUri,
+                contentDescription = "Logo del emprendedor",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .padding(8.dp),
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_error)
+            )
+        } else {
+            AsyncImage(
+                model = entrepreneur.logoImage,
+                contentDescription = "Logo del emprendedor",
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .padding(8.dp),
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_error)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 

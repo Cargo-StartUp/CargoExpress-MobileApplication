@@ -1,7 +1,11 @@
 package com.cargoexpress.app.core
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -82,6 +86,10 @@ import com.cargoexpress.app.core.presentation.vehicle.registerVehicle.RegisterVe
 import com.cargoexpress.app.core.presentation.vehicle.registerVehicle.RegisterVehicleViewModel
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        const val PICK_IMAGE_REQUEST = 1
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class)
@@ -341,4 +349,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    fun openImagePicker() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+
+
 }
