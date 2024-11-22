@@ -27,8 +27,6 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TripCard(trip: Trip, navController: NavController) {
-    val formattedDate = formatDateTime(trip.loadDate)
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,7 +51,7 @@ fun TripCard(trip: Trip, navController: NavController) {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Fecha de Carga: $formattedDate")
+                Text(text = "Fecha de Carga: ${trip.loadDate}")
                 Text(text = "Lugar de Carga: ${trip.loadLocation}")
             }
             IconButton(onClick = { /* Acción de edición */ }) {
@@ -108,9 +106,9 @@ fun TripDetailScreen(
                     DetailRow(label = "Tipo de carga", value = it.cargoType)
                     DetailRow(label = "Peso", value = "${it.weight} kg")
                     DetailRow(label = "Lugar de carga", value = it.loadLocation)
-                    DetailRow(label = "Fecha de carga", value = formatDateTime(it.loadDate))
+                    DetailRow(label = "Fecha de carga", value = it.loadDate)
                     DetailRow(label = "Lugar de descarga", value = it.unloadLocation)
-                    DetailRow(label = "Fecha de descarga", value = formatDateTime(it.unloadDate))
+                    DetailRow(label = "Fecha de descarga", value = it.unloadDate)
                     DetailRow(label = "Driver ID", value = it.driverId.toString())
                     DetailRow(label = "Vehicle ID", value = it.vehicleId.toString())
                     DetailRow(label = "Client ID", value = it.clientId.toString())
