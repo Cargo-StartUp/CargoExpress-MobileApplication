@@ -3,8 +3,6 @@ package com.cargoexpress.app.core.data.remote.trip
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.cargoexpress.app.core.domain.Trip
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 data class TripDto(
     val id: Int,
@@ -27,18 +25,15 @@ data class TripData(
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
-private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-
-@RequiresApi(Build.VERSION_CODES.O)
 fun TripDto.toTrip() = Trip(
     id = id,
     tripName = name.tripName,
     cargoType = cargoData.type,
     weight = cargoData.weight,
     loadLocation = tripData.loadLocation,
-    loadDate = LocalDateTime.parse(tripData.loadDate, formatter).format(formatter),
+    loadDate = tripData.loadDate,
     unloadLocation = tripData.unloadLocation,
-    unloadDate = LocalDateTime.parse(tripData.unloadDate, formatter).format(formatter),
+    unloadDate = tripData.unloadDate,
     driverId = driverId,
     vehicleId = vehicleId,
     clientId = clientId,
@@ -84,9 +79,9 @@ fun TripDtoPost.toTrip(): Trip {
         cargoType = type,
         weight = weight,
         loadLocation = loadLocation,
-        loadDate = LocalDateTime.parse(loadDate, formatter).format(formatter),
+        loadDate = loadDate,
         unloadLocation = unloadLocation,
-        unloadDate = LocalDateTime.parse(unloadDate, formatter).format(formatter),
+        unloadDate = unloadDate,
         driverId = driverId,
         vehicleId = vehicleId,
         clientId = clientId,

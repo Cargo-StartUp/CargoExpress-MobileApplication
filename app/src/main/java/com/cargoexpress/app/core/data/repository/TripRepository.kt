@@ -1,6 +1,7 @@
 package com.cargoexpress.app.core.data.repository
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.cargoexpress.app.core.data.remote.expense.ExpenseService
 import com.cargoexpress.app.core.data.remote.expense.toExpense
@@ -25,6 +26,8 @@ class TripRepository(private val tripService: TripService, private val expenseSe
         }
         return@withContext try {
             val response = tripService.getTrips(entrepreneurId, token)
+            Log.d("TripRepository", "Response code: ${response.code()}")
+            Log.d("TripRepository", "Response message: ${response.message()}")
             if (response.isSuccessful) {
                 val trips = response.body()?.map { tripDto ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -33,11 +36,14 @@ class TripRepository(private val tripService: TripService, private val expenseSe
                         tripDto.toTripLegacy()
                     }
                 } ?: emptyList()
+                Log.d("TripRepository", "Mapped trips: $trips")
                 Resource.Success(data = trips)
             } else {
+                Log.e("TripRepository", "Failed to fetch trips: ${response.errorBody()?.string()}")
                 Resource.Error(message = "Failed to fetch trips")
             }
         } catch (e: Exception) {
+            Log.e("TripRepository", "Exception occurred: ${e.message}", e)
             Resource.Error(message = e.message ?: "An unknown error occurred")
         }
     }

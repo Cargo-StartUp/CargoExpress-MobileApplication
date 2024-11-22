@@ -23,8 +23,6 @@ import androidx.navigation.NavController
 import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.domain.Trip
 import pe.edu.upc.appturismo.common.Constants
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun TripManagementScreen(
@@ -161,12 +159,6 @@ fun TripList(trips: List<Trip>, navController: NavController, isDescending: Bool
 
 @Composable
 fun TripCard(trip: Trip, navController: NavController) {
-    val LoadDateFormat = LocalDateTime.parse(trip.loadDate)
-    val LoadDate = LoadDateFormat.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-
-    val UnloadDateFormat = LocalDateTime.parse(trip.unloadDate)
-    val UnloadDate = UnloadDateFormat.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,7 +186,7 @@ fun TripCard(trip: Trip, navController: NavController) {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append("FECHA DE CARGA: ")
                         }
-                        append(LoadDate)
+                        append(trip.loadDate)
                     }.toAnnotatedString()
                 )
                 Text(
@@ -202,7 +194,7 @@ fun TripCard(trip: Trip, navController: NavController) {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append("FECHA DE DESCARGA: ")
                         }
-                        append(UnloadDate)
+                        append(trip.unloadDate)
                     }.toAnnotatedString()
                 )
             }

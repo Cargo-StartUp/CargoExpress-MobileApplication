@@ -48,6 +48,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.DirectionsBusFilled
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.twotone.AppRegistration
 import androidx.compose.material.icons.twotone.LocalShipping
@@ -218,15 +219,26 @@ class MainActivity : ComponentActivity() {
                         if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
                             NavigationBar {
                                 NavigationBarItem(
+                                    selected = currentDestination == "home",
+                                    onClick = { },
+                                    icon = {
+                                        Icon(
+                                            Icons.Filled.Home,
+                                            contentDescription = "Inicio"
+                                        )
+                                    },
+                                    label = { Text("Inicio") }
+                                )
+                                NavigationBarItem(
                                     selected = currentDestination == "trips",
                                     onClick = { navController.navigate("trips") },
                                     icon = {
                                         Icon(
                                             imageVector = Icons.TwoTone.LocalShipping,
-                                            contentDescription = "Mis Viajes"
+                                            contentDescription = "Viajes"
                                         )
                                     },
-                                    label = { Text("Mis Viajes") }
+                                    label = { Text("Viajes") }
                                 )
                                 NavigationBarItem(
                                     selected = currentDestination == "vehicles",
@@ -234,10 +246,10 @@ class MainActivity : ComponentActivity() {
                                     icon = {
                                         Icon(
                                             Icons.Filled.DirectionsBusFilled,
-                                            contentDescription = "Mis Vehiculos"
+                                            contentDescription = "Vehiculos"
                                         )
                                     },
-                                    label = { Text("Mis Vehiculos") }
+                                    label = { Text("Vehiculos") }
                                 )
                                 NavigationBarItem(
                                     selected = currentDestination == "drivers",
@@ -245,21 +257,10 @@ class MainActivity : ComponentActivity() {
                                     icon = {
                                         Icon(
                                             Icons.Filled.Groups,
-                                            contentDescription = "Mis Conductores"
+                                            contentDescription = "Conductores"
                                         )
                                     },
-                                    label = { Text("Mis Conductores") }
-                                )
-                                NavigationBarItem(
-                                    selected = currentDestination == "gps",
-                                    onClick = { },
-                                    icon = {
-                                        Icon(
-                                            Icons.Filled.LocationOn,
-                                            contentDescription = "GPS"
-                                        )
-                                    },
-                                    label = { Text("GPS") }
+                                    label = { Text("Conductores") }
                                 )
                             }
                         }
