@@ -5,11 +5,14 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Body
-
+import retrofit2.http.Path
 
 interface DriverService {
-    @GET("drivers")
-    suspend fun getDrivers(@Header("Authorization") token: String): Response<List<DriverDto>>
+    @GET("entrepreneurs/{entrepreneurId}/drivers")
+    suspend fun getDrivers(
+        @Header("Authorization") token: String,
+        @Path("entrepreneurId") entrepreneurId: Int
+    ): Response<List<DriverDto>>
 
     @POST("drivers")
     suspend fun addDriver(

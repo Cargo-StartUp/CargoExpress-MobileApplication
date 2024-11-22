@@ -167,8 +167,10 @@ class MainActivity : ComponentActivity() {
                     ClientRepository(clientService),
                     EntrepreneurRepository(entrepreneurService)
                 )
+
+                val vehicleRepository = VehicleRepository(vehicleService)
                 val profileViewModel = ProfileViewModel(navController,EntrepreneurRepository(entrepreneurService))
-                val vehicleListViewModel = VehicleListViewModel(navController, VehicleRepository(vehicleService), EntrepreneurRepository(entrepreneurService))
+                val vehicleListViewModel = VehicleListViewModel(navController,vehicleRepository )
                 //driver
                 val driverRepository = DriverRepository(driverService)
                 val driverListViewModel = DriverListViewModel(navController, driverRepository)
@@ -177,7 +179,7 @@ class MainActivity : ComponentActivity() {
                 val expenseRepository = ExpenseRepository(expenseService)
 
                 //vehicle
-                val vehicleRepository = VehicleRepository(vehicleService)
+
 
                 //Trip
                 val tripRepository = TripRepository(tripService, expenseService)

@@ -11,14 +11,12 @@ import pe.edu.upc.appturismo.common.Resource
 
 class DriverRepository(private val driverService: DriverService) {
 
-
-
-    suspend fun getDrivers(token: String): Resource<List<Driver>> = withContext(Dispatchers.IO) {
+    suspend fun getDrivers(token: String, entrepreneurId: Int): Resource<List<Driver>> = withContext(Dispatchers.IO) {
         if (token.isBlank()) {
             return@withContext Resource.Error(message = "Token is required")
         }
         return@withContext try {
-            val response = driverService.getDrivers("Bearer $token")
+            val response = driverService.getDrivers("Bearer $token", entrepreneurId)
             if (response.isSuccessful) {
                 val drivers = response.body()?.map { it.toDriver() } ?: emptyList()
                 Resource.Success(data = drivers)
@@ -29,7 +27,6 @@ class DriverRepository(private val driverService: DriverService) {
             Resource.Error(message = e.message ?: "An unknown error occurred")
         }
     }
-
 
     suspend fun addDriver(driver: Driver): Resource<Driver> = withContext(Dispatchers.IO) {
         if (Constants.TOKEN.isBlank()) {
@@ -46,5 +43,4 @@ class DriverRepository(private val driverService: DriverService) {
             Resource.Error(message = e.message ?: "An unknown error occurred")
         }
     }
-
 }

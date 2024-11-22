@@ -13,22 +13,20 @@ import pe.edu.upc.appturismo.common.Resource
 import pe.edu.upc.appturismo.common.UIState
 
 class VehicleListViewModel(
-    navController: NavHostController,
-    private val vehicleRepository: VehicleRepository,
-    entrepreneurRepository: EntrepreneurRepository
+    private val navController: NavHostController,
+    private val vehicleRepository: VehicleRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(UIState<List<Vehicle>>())
     val state: State<UIState<List<Vehicle>>> get() = _state
 
     fun getVehiclesForEntrepreneur(entrepreneurId: Int, token: String) {
-        _state.value = UIState(isLoading = true)
         viewModelScope.launch {
-            val result = vehicleRepository.getVehicleList(token)
-            if (result is Resource.Success) {
-                _state.value = UIState(data = result.data)
-            } else if (result is Resource.Error) {
-                _state.value = UIState(message = result.message ?: "vuelve a nacer")
+            _state.value = UIState(isLoading = true)
+            val result = vehicleRepository.getVehicleList(token, entrepreneurId)
+            _state.value = when (result) {
+                is Resource.Success -> UIState(data = result.data)
+                is Resource.Error -> UIState(message = result.message ?: "An unknown error occurred")
             }
         }
     }

@@ -12,6 +12,15 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface TripService {
+
+    @GET("entrepreneurs/{entrepreneurId}/trips")
+    suspend fun getTrips(
+        @Path("entrepreneurId") entrepreneurId: Int,
+        @Header("Authorization") token: String
+    ): Response<List<TripDto>>
+
+
+
     @GET("trips")
     suspend fun getTrips(@Header("Authorization") token: String): Response<List<TripDto>>
 

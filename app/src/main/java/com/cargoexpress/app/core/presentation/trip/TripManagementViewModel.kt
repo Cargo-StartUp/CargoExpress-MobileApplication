@@ -13,9 +13,7 @@ import pe.edu.upc.appturismo.common.UIState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class TripManagementViewModel(
-    private val tripRepository: TripRepository
-) : ViewModel() {
+class TripManagementViewModel(private val tripRepository: TripRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState<List<Trip>>(isLoading = true))
     val uiState: StateFlow<UIState<List<Trip>>> = _uiState
@@ -32,7 +30,7 @@ class TripManagementViewModel(
     private fun loadTrips() {
         viewModelScope.launch {
             _uiState.value = UIState(isLoading = true)
-            val result = tripRepository.getTrips(Constants.TOKEN)
+            val result = tripRepository.getTrips(Constants.TOKEN, Constants.ENTREPRENEUR_ID)
             _uiState.value = when (result) {
                 is Resource.Success -> {
                     allTrips = result.data ?: emptyList()
@@ -42,6 +40,7 @@ class TripManagementViewModel(
             }
         }
     }
+
 
     fun updateSearchQuery(query: String, selectedFilter: String) {
         _searchQuery.value = query

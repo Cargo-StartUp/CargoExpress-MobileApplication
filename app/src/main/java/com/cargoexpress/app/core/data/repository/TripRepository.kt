@@ -17,15 +17,14 @@ import kotlinx.coroutines.withContext
 import pe.edu.upc.appturismo.common.Constants
 import pe.edu.upc.appturismo.common.Resource
 
-class TripRepository(private val tripService: TripService,
-                     private val expenseService: ExpenseService) {
+class TripRepository(private val tripService: TripService, private val expenseService: ExpenseService) {
 
-    suspend fun getTrips(token: String): Resource<List<Trip>> = withContext(Dispatchers.IO) {
+    suspend fun getTrips(token: String, entrepreneurId: Int): Resource<List<Trip>> = withContext(Dispatchers.IO) {
         if (token.isBlank()) {
             return@withContext Resource.Error(message = "Token is required")
         }
         return@withContext try {
-            val response = tripService.getTrips(token)
+            val response = tripService.getTrips(entrepreneurId, token)
             if (response.isSuccessful) {
                 val trips = response.body()?.map { tripDto ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -42,6 +41,7 @@ class TripRepository(private val tripService: TripService,
             Resource.Error(message = e.message ?: "An unknown error occurred")
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     suspend fun addTrip(trip: Trip): Resource<Trip> = withContext(Dispatchers.IO) {

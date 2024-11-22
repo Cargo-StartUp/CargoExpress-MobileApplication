@@ -9,17 +9,15 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface VehicleService {
-
-    @GET("vehicles/{id}")
-    suspend fun getVehicle(@Path("id") id: Int, @Header("Authorization") token: String): Response<VehicleDto>
-
-    @GET("vehicles")
-    suspend fun getVehicles(@Header("Authorization") token: String): Response<List<VehicleDto>>
+    @GET("entrepreneurs/{entrepreneurId}/vehicles")
+    suspend fun getVehicles(
+        @Header("Authorization") token: String,
+        @Path("entrepreneurId") entrepreneurId: Int
+    ): Response<List<VehicleDto>>
 
     @POST("vehicles")
     suspend fun addVehicle(
         @Header("Authorization") token: String,
         @Body vehicle: VehicleDto
     ): Response<VehicleDto>
-
 }

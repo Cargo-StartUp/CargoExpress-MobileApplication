@@ -26,9 +26,9 @@ data class TripData(
     val unloadDate: String
 )
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun TripDto.toTrip() = Trip(
     id = id,
@@ -36,9 +36,9 @@ fun TripDto.toTrip() = Trip(
     cargoType = cargoData.type,
     weight = cargoData.weight,
     loadLocation = tripData.loadLocation,
-    loadDate = LocalDateTime.parse(tripData.loadDate, formatter).toString(),
+    loadDate = LocalDateTime.parse(tripData.loadDate, formatter).format(formatter),
     unloadLocation = tripData.unloadLocation,
-    unloadDate = LocalDateTime.parse(tripData.unloadDate, formatter).toString(),
+    unloadDate = LocalDateTime.parse(tripData.unloadDate, formatter).format(formatter),
     driverId = driverId,
     vehicleId = vehicleId,
     clientId = clientId,
@@ -46,7 +46,6 @@ fun TripDto.toTrip() = Trip(
 )
 
 fun TripDto.toTripLegacy(): Trip {
-
     return Trip(
         id = id,
         tripName = name.tripName,
@@ -63,7 +62,6 @@ fun TripDto.toTripLegacy(): Trip {
     )
 }
 
-//esto se agrego
 data class TripDtoPost(
     val name: String,
     val type: String,
@@ -78,27 +76,23 @@ data class TripDtoPost(
     val entrepreneurId: Int
 )
 
-
-
 @RequiresApi(Build.VERSION_CODES.O)
-fun TripDtoPost.TripDtoPost(): Trip {
+fun TripDtoPost.toTrip(): Trip {
     return Trip(
         id = 0,
         tripName = name,
         cargoType = type,
         weight = weight,
         loadLocation = loadLocation,
-        loadDate = LocalDateTime.parse(loadDate, formatter).toString(),
+        loadDate = LocalDateTime.parse(loadDate, formatter).format(formatter),
         unloadLocation = unloadLocation,
-        unloadDate = LocalDateTime.parse(unloadDate, formatter).toString(),
+        unloadDate = LocalDateTime.parse(unloadDate, formatter).format(formatter),
         driverId = driverId,
         vehicleId = vehicleId,
         clientId = clientId,
         entrepreneurId = entrepreneurId
     )
 }
-
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun Trip.toTripDto(): TripDtoPost {
@@ -110,24 +104,6 @@ fun Trip.toTripDto(): TripDtoPost {
         loadDate = loadDate,
         unloadLocation = unloadLocation,
         unloadDate = unloadDate,
-        driverId = driverId,
-        vehicleId = vehicleId,
-        clientId = clientId,
-        entrepreneurId = entrepreneurId
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun TripDtoPost.toTrip(): Trip {
-    return Trip(
-        id = 0,
-        tripName = name,
-        cargoType = type,
-        weight = weight,
-        loadLocation = loadLocation,
-        loadDate = LocalDateTime.parse(loadDate, formatter).toString(),
-        unloadLocation = unloadLocation,
-        unloadDate = LocalDateTime.parse(unloadDate, formatter).toString(),
         driverId = driverId,
         vehicleId = vehicleId,
         clientId = clientId,
