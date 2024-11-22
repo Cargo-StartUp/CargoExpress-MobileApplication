@@ -68,46 +68,46 @@ fun RegisterVehicleScreen(
 
             InputField(
                 value = model,
-                label = "Model",
+                label = "Modelo",
                 onValueChange = {
                     model = it
-                    modelError = if (it.isBlank()) "Model is required" else null
+                    modelError = if (it.isBlank()) "El modelo es obligatorio" else null
                 },
                 error = modelError
             )
             InputField(
                 value = plate,
-                label = "Plate",
+                label = "Placa",
                 onValueChange = {
                     plate = it
-                    plateError = if (it.isBlank()) "Plate is required" else null
+                    plateError = if (it.isBlank()) "La placa es obligatoria" else null
                 },
                 error = plateError
             )
             InputField(
                 value = tractorPlate,
-                label = "Tractor Plate",
+                label = "Placa del Tractor",
                 onValueChange = {
                     tractorPlate = it
-                    tractorPlateError = if (it.isBlank()) "Tractor Plate is required" else null
+                    tractorPlateError = if (it.isBlank()) "La placa del tractor es obligatoria" else null
                 },
                 error = tractorPlateError
             )
             InputField(
                 value = maxLoad,
-                label = "Max Load",
+                label = "Carga Máxima",
                 onValueChange = {
                     maxLoad = it
-                    maxLoadError = if (it.isBlank() || it.toFloatOrNull() == null) "Max Load is required and must be a number" else null
+                    maxLoadError = if (it.isBlank() || it.toFloatOrNull() == null) "La carga máxima es obligatoria y debe ser un número" else null
                 },
                 error = maxLoadError
             )
             InputField(
                 value = volume,
-                label = "Volume",
+                label = "Volumen",
                 onValueChange = {
                     volume = it
-                    volumeError = if (it.isBlank() || it.toFloatOrNull() == null) "Volume is required and must be a number" else null
+                    volumeError = if (it.isBlank() || it.toFloatOrNull() == null) "El volumen es obligatorio y debe ser un número" else null
                 },
                 error = volumeError
             )
@@ -120,11 +120,11 @@ fun RegisterVehicleScreen(
 
             Button(
                 onClick = {
-                    modelError = if (model.isBlank()) "Model is required" else null
-                    plateError = if (plate.isBlank()) "Plate is required" else null
-                    tractorPlateError = if (tractorPlate.isBlank()) "Tractor Plate is required" else null
-                    maxLoadError = if (maxLoad.isBlank() || maxLoad.toFloatOrNull() == null) "Max Load is required and must be a number" else null
-                    volumeError = if (volume.isBlank() || volume.toFloatOrNull() == null) "Volume is required and must be a number" else null
+                    modelError = if (model.isBlank()) "El modelo es obligatorio" else null
+                    plateError = if (plate.isBlank()) "La placa es obligatoria" else null
+                    tractorPlateError = if (tractorPlate.isBlank()) "La placa del tractor es obligatoria" else null
+                    maxLoadError = if (maxLoad.isBlank() || maxLoad.toFloatOrNull() == null) "La carga máxima es obligatoria y debe ser un número" else null
+                    volumeError = if (volume.isBlank() || volume.toFloatOrNull() == null) "El volumen es obligatorio y debe ser un número" else null
 
                     val valid = listOf(modelError, plateError, tractorPlateError, maxLoadError, volumeError).all { it == null }
 
@@ -147,9 +147,9 @@ fun RegisterVehicleScreen(
                                 maxLoad = ""
                                 volume = ""
                                 navController.navigate("vehicles") // Navigate to VehicleListScreen
-                                "Vehicle registrado correctamente"
+                                "Vehiculo registrado correctamente"
                             } else {
-                                "No se pudo agregar el vehiculo"
+                                "No se pudo registrar el vehiculo"
                             }
 
                             scope.launch {
@@ -158,7 +158,7 @@ fun RegisterVehicleScreen(
                         }
                     } else {
                         scope.launch {
-                            snackbarHostState.showSnackbar("Please complete all fields correctly")
+                            snackbarHostState.showSnackbar("Por favor, completa todos los campos correctamente")
                         }
                     }
                 },
