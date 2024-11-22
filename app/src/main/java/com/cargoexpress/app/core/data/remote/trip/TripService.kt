@@ -19,8 +19,6 @@ interface TripService {
         @Header("Authorization") token: String
     ): Response<List<TripDto>>
 
-
-
     @GET("trips")
     suspend fun getTrips(@Header("Authorization") token: String): Response<List<TripDto>>
 

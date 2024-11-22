@@ -2,7 +2,9 @@ package com.cargoexpress.app.core.presentation.trip
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cargoexpress.app.core.data.repository.OngoingTripRepository
 import com.cargoexpress.app.core.data.repository.TripRepository
+import com.cargoexpress.app.core.domain.OngoingTrip
 import com.cargoexpress.app.core.domain.Trip
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +15,9 @@ import pe.edu.upc.appturismo.common.UIState
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class TripManagementViewModel(private val tripRepository: TripRepository) : ViewModel() {
+class TripManagementViewModel(
+    private val tripRepository: TripRepository,
+    private val ongoingTripRepository: OngoingTripRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UIState<List<Trip>>(isLoading = true))
     val uiState: StateFlow<UIState<List<Trip>>> = _uiState
@@ -22,6 +26,7 @@ class TripManagementViewModel(private val tripRepository: TripRepository) : View
     val searchQuery: StateFlow<String> = _searchQuery
 
     private var allTrips: List<Trip> = emptyList()
+    private var allOngoingTrips: List<OngoingTrip> = emptyList()
 
     init {
         loadTrips()
@@ -41,6 +46,19 @@ class TripManagementViewModel(private val tripRepository: TripRepository) : View
         }
     }
 
+    fun loadOngoingTrips(token: String) {
+        viewModelScope.launch {
+            val result = ongoingTripRepository.getOngoingTrips(token)
+            if (result is Resource.Success) {
+                allOngoingTrips = result.data ?: emptyList()
+            } else {
+                handleError(Exception(result.message))
+            }
+        }
+    }
+    fun getOngoingTripById(tripId: Int): OngoingTrip? {
+        return allOngoingTrips.find { it.tripId == tripId }
+    }
 
     fun updateSearchQuery(query: String, selectedFilter: String) {
         _searchQuery.value = query

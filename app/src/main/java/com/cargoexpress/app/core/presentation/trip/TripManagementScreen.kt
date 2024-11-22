@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.cargoexpress.app.core.data.repository.OngoingTripRepository
 import com.cargoexpress.app.core.data.repository.TripRepository
 import com.cargoexpress.app.core.domain.Trip
 import pe.edu.upc.appturismo.common.Constants
@@ -27,15 +28,20 @@ import pe.edu.upc.appturismo.common.Constants
 @Composable
 fun TripManagementScreen(
     tripRepository: TripRepository,
+    ongoingTripRepository: OngoingTripRepository,
     navController: NavController
 ) {
-    val factory = remember { TripManagementViewModelFactory(tripRepository) }
+    val factory = remember { TripManagementViewModelFactory(tripRepository, ongoingTripRepository) }
     val viewModel: TripManagementViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("ID") }
 
     var isDescending by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadOngoingTrips(Constants.TOKEN)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -88,7 +94,7 @@ fun TripManagementScreen(
                     )
                 }
                 else -> {
-                    TripList(trips = uiState.data ?: emptyList(), navController = navController, isDescending = isDescending)
+                    TripList(trips = uiState.data ?: emptyList(), navController = navController, isDescending = isDescending, viewModel = viewModel)
                 }
             }
         }
@@ -104,7 +110,6 @@ fun TripManagementScreen(
         }
     }
 }
-
 @Composable
 fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit, isDescending: Boolean, onOrderChange: () -> Unit) {
     Row(
@@ -138,7 +143,7 @@ fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit, isDe
 }
 
 @Composable
-fun TripList(trips: List<Trip>, navController: NavController, isDescending: Boolean) {
+fun TripList(trips: List<Trip>, navController: NavController, isDescending: Boolean, viewModel: TripManagementViewModel) {
     val sortedTrips = if (isDescending) {
         trips.sortedByDescending { it.id }
     } else {
@@ -152,13 +157,16 @@ fun TripList(trips: List<Trip>, navController: NavController, isDescending: Bool
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(sortedTrips) { trip ->
-            TripCard(trip = trip, navController = navController)
+            TripCard(trip = trip, navController = navController, viewModel = viewModel)
         }
     }
 }
 
 @Composable
-fun TripCard(trip: Trip, navController: NavController) {
+fun TripCard(trip: Trip, navController: NavController, viewModel: TripManagementViewModel) {
+    val ongoingTrip = viewModel.getOngoingTripById(trip.id)
+    val isButtonEnabled = ongoingTrip != null
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -202,7 +210,10 @@ fun TripCard(trip: Trip, navController: NavController) {
                 IconButton(onClick = { navController.navigate("edit_trip/${trip.id}") }) {
                     Icon(Icons.Default.Edit, contentDescription = "Edit")
                 }
-                IconButton(onClick = { /*GPS*/ }) {
+                IconButton(
+                    onClick = { navController.navigate("gps/${trip.id}") },
+                    enabled = isButtonEnabled
+                ) {
                     Icon(Icons.Default.LocationOn, contentDescription = "GPS")
                 }
             }

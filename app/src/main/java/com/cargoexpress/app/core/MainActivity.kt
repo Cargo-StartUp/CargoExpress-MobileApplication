@@ -22,6 +22,7 @@ import com.cargoexpress.app.core.data.remote.login.LoginService
 import com.cargoexpress.app.core.data.remote.register.RegisterService
 import com.cargoexpress.app.core.data.remote.trip.TripService
 import com.cargoexpress.app.core.data.remote.user.ClientService
+import com.cargoexpress.app.core.data.remote.ongoingtrip.OngoingTripService
 import com.cargoexpress.app.core.data.remote.user.EntrepreneurService
 import com.cargoexpress.app.core.data.remote.vehicle.VehicleService
 import com.cargoexpress.app.core.data.repository.ClientRepository
@@ -70,10 +71,12 @@ import com.cargoexpress.app.core.data.remote.driver.DriverService
 import com.cargoexpress.app.core.data.remote.expense.ExpenseService
 import com.cargoexpress.app.core.data.repository.DriverRepository
 import com.cargoexpress.app.core.data.repository.ExpenseRepository
+import com.cargoexpress.app.core.data.repository.OngoingTripRepository
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverViewModel
+import com.cargoexpress.app.core.presentation.gps.GpsScreen
 import com.cargoexpress.app.core.presentation.profile.ProfileScreen
 import com.cargoexpress.app.core.presentation.profile.ProfileViewModel
 import com.cargoexpress.app.core.presentation.trip.detailsTrip.TripDetailScreen
@@ -152,6 +155,13 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(ExpenseService::class.java)
 
+        val ongoingTripService = Retrofit
+            .Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OngoingTripService::class.java)
+
         val tripRepository = TripRepository(tripService, expenseService)
 
         super.onCreate(savedInstanceState)
@@ -187,6 +197,8 @@ class MainActivity : ComponentActivity() {
                 val entrepreneurRepository = EntrepreneurRepository(entrepreneurService)
                 val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
+
+                val ongoingTripRepository = OngoingTripRepository(ongoingTripService)
 
                 @Composable
                 fun MyAppBar(onProfileClick: () -> Unit) {
@@ -280,10 +292,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(route = Routes.TripList.routes) {
-                            TripManagementScreen(tripRepository = tripRepository, navController)
+                            TripManagementScreen(tripRepository = tripRepository, ongoingTripRepository, navController)
                         }
                         composable(route = "trips") {
-                            TripManagementScreen(tripRepository = tripRepository, navController)
+                            TripManagementScreen(tripRepository = tripRepository, ongoingTripRepository, navController)
                         }
                         composable(route = "vehicles") {
                             VehicleListScreen(viewModel = vehicleListViewModel, navController)
@@ -292,9 +304,6 @@ class MainActivity : ComponentActivity() {
                         composable(route = "drivers") {
                             DriverListScreen(viewModel = driverListViewModel, navController)
                             // TripManagementScreen(tripRepository = tripRepository)
-                        }
-                        composable(route = "gps") {
-                            // GPS screen
                         }
                         // MainActivity.kt
                         composable(route = "trip_details/{tripId}") { backStackEntry ->
@@ -343,6 +352,12 @@ class MainActivity : ComponentActivity() {
                             val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
                             TripEditScreen(tripId = tripId, tripRepository = tripRepository, navController = navController)
                         }
+
+                        composable("gps/{tripId}") { backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
+                            GpsScreen(tripId = tripId, tripRepository = tripRepository, navController = navController, ongoingTripRepository = ongoingTripRepository)
+                        }
+
                         composable(route = "profile") {
                             ProfileScreen(viewModel = profileViewModel, navController)
                             // TripManagementScreen(tripRepository = tripRepository)
