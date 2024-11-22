@@ -1,5 +1,6 @@
 package com.cargoexpress.app.core.presentation.gps
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +31,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.maps.android.SphericalUtil
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Color as ComposeColor
 
 @Composable
 fun GpsScreen(
@@ -57,6 +66,8 @@ fun GpsScreen(
     val latitude: Double? = tripInProgress?.latitude?.toDouble()
     val longitude: Double? = tripInProgress?.longitude?.toDouble()
 
+    var distance by remember { mutableStateOf(0.0) }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -76,16 +87,73 @@ fun GpsScreen(
 
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
 
-                    // Add polyline between the two markers
                     googleMap.addPolyline(
                         PolylineOptions()
                             .add(location, callaoLocation)
                             .width(5f)
-                            .color(android.graphics.Color.RED)
+                            .color(Color.RED)
                     )
+                    distance = SphericalUtil.computeDistanceBetween(location, callaoLocation)
+                    println("Distance: $distance meters")
 
                 } else {
                     println("Latitude or Longitude is null")
+                }
+            }
+        }
+        // Card with trip information
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .align(Alignment.BottomCenter)
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                colors = CardDefaults.cardColors(containerColor = ComposeColor.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Información del Viaje", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row {
+                        Text(text = "Latitud:", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${latitude ?: "${tripInProgress?.latitude}"}", fontSize = 16.sp)
+                    }
+                    Row {
+                        Text(text = "Longitud:", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${longitude ?: "${tripInProgress?.longitude}"}", fontSize = 16.sp)
+                    }
+                    Row {
+                        Text(text = "Velocidad:", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(text = "${tripInProgress?.speed} km/h", fontSize = 16.sp)
+                    }
+                    Row {
+                        Text(text = "Distancia:", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = if (distance >= 1000) {
+                                "${(distance / 1000).toInt()} km"
+                            } else {
+                                "${distance.toInt()} m"
+                            },
+                            fontSize = 16.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = { /* TODO: Add functionality */ }) {
+                        Text(text = "Estado del viaje")
+                    }
                 }
             }
         }
