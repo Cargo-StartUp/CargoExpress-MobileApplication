@@ -120,7 +120,7 @@ fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit, isDe
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            listOf("ID", "Nombre", "Fecha").forEach { filter ->
+            listOf("Orden", "Nombre", "Fecha").forEach { filter ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 8.dp)

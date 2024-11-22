@@ -151,7 +151,7 @@ fun GpsScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { /* TODO: Add functionality */ }) {
+                    Button(onClick = { navController.navigate("alert/${tripId}") }) {
                         Text(text = "Estado del viaje")
                     }
                 }

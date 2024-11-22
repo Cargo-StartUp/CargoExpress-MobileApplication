@@ -67,11 +67,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cargoexpress.app.R
+import com.cargoexpress.app.core.data.remote.alert.AlertService
 import com.cargoexpress.app.core.data.remote.driver.DriverService
 import com.cargoexpress.app.core.data.remote.expense.ExpenseService
+import com.cargoexpress.app.core.data.repository.AlertRepository
 import com.cargoexpress.app.core.data.repository.DriverRepository
 import com.cargoexpress.app.core.data.repository.ExpenseRepository
 import com.cargoexpress.app.core.data.repository.OngoingTripRepository
+import com.cargoexpress.app.core.presentation.alert.AlertScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListScreen
 import com.cargoexpress.app.core.presentation.driver.driverList.DriverListViewModel
 import com.cargoexpress.app.core.presentation.driver.driverList.registerDriver.RegisterDriverScreen
@@ -162,6 +165,13 @@ class MainActivity : ComponentActivity() {
             .build()
             .create(OngoingTripService::class.java)
 
+        val alertService = Retrofit
+            .Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AlertService::class.java)
+
         val tripRepository = TripRepository(tripService, expenseService)
 
         super.onCreate(savedInstanceState)
@@ -199,6 +209,7 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navController.currentBackStackEntry?.destination?.route
 
                 val ongoingTripRepository = OngoingTripRepository(ongoingTripService)
+                val alertRepository = AlertRepository(alertService)
 
                 @Composable
                 fun MyAppBar(onProfileClick: () -> Unit) {
@@ -356,6 +367,11 @@ class MainActivity : ComponentActivity() {
                         composable("gps/{tripId}") { backStackEntry ->
                             val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
                             GpsScreen(tripId = tripId, tripRepository = tripRepository, navController = navController, ongoingTripRepository = ongoingTripRepository)
+                        }
+
+                        composable("alert/{tripId}"){ backStackEntry ->
+                            val tripId = backStackEntry.arguments?.getString("tripId")?.toInt() ?: 0
+                            AlertScreen(tripId = tripId, tripRepository = tripRepository, navController = navController, alertRepository = alertRepository)
                         }
 
                         composable(route = "profile") {
