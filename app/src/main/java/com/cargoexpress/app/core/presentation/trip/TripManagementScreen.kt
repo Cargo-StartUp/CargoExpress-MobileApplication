@@ -120,7 +120,7 @@ fun FilterOptions(selectedFilter: String, onFilterChange: (String) -> Unit, isDe
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            listOf("Orden", "Nombre", "Fecha").forEach { filter ->
+            listOf("Nombre", "Fecha").forEach { filter ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(horizontal = 8.dp)
@@ -207,9 +207,6 @@ fun TripCard(trip: Trip, navController: NavController, viewModel: TripManagement
                 )
             }
             Column {
-                IconButton(onClick = { navController.navigate("edit_trip/${trip.id}") }) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                }
                 IconButton(
                     onClick = { navController.navigate("gps/${trip.id}") },
                     enabled = isButtonEnabled

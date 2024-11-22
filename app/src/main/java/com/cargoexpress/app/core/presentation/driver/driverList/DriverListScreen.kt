@@ -143,9 +143,6 @@ fun DriverItem(driver: DriverDto) {
                     color = Color.White
                 )
             }
-            IconButton(onClick = { /*EDITAR*/ }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
-            }
         }
     }
 }

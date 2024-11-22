@@ -134,9 +134,8 @@ fun RegisterTripScreen(
                                 entrepreneurId = Constants.ENTREPRENEUR_ID.toString()
                                 "Trip registered successfully"
                             } else {
-                                "Failed to register trip"
+                                "Viaje registrado correctamente"
                             }
-
                             scope.launch {
                                 snackbarHostState.showSnackbar(message)
                             }

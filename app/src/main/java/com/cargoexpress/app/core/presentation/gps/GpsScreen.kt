@@ -150,10 +150,6 @@ fun GpsScreen(
                             fontSize = 16.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { navController.navigate("alert/${tripId}") }) {
-                        Text(text = "Estado del viaje")
-                    }
                 }
             }
         }

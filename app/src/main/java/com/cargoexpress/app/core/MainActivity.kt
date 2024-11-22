@@ -242,17 +242,6 @@ class MainActivity : ComponentActivity() {
                         if (currentRoute != Routes.Login.routes && currentRoute != Routes.Register.routes) {
                             NavigationBar {
                                 NavigationBarItem(
-                                    selected = currentDestination == "home",
-                                    onClick = { },
-                                    icon = {
-                                        Icon(
-                                            Icons.Filled.Home,
-                                            contentDescription = "Inicio"
-                                        )
-                                    },
-                                    label = { Text("Inicio") }
-                                )
-                                NavigationBarItem(
                                     selected = currentDestination == "trips",
                                     onClick = { navController.navigate("trips") },
                                     icon = {

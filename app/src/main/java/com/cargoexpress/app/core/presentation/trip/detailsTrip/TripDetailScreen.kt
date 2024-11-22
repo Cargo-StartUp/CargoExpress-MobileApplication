@@ -114,19 +114,6 @@ fun TripDetailScreen(
                     DetailRow(label = "Client ID", value = it.clientId.toString())
                 }
             }
-
-            if (expenses.isNotEmpty()) {
-                expenses.forEach { expense ->
-                    ExpenseCard(expense = expense)
-                }
-            } else {
-                Button(
-                    onClick = { navController.navigate("register_expense/$tripId") },
-                    modifier = Modifier.padding(top = 16.dp)
-                ) {
-                    Text(text = "Agregar gastos")
-                }
-            }
         }
     }
 }

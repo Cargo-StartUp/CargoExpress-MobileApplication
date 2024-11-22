@@ -136,9 +136,6 @@ fun VehicleItem(vehicle: Vehicle) {
                     color = Color(0xFF666666)
                 )
             }
-            IconButton(onClick = { /* Acción de edición */ }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color(0xFF666666))
-            }
         }
     }
 }
